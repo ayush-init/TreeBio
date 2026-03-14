@@ -18,26 +18,36 @@ import SocialSettings from "../components/social-settings";
 import AppearanceSettings from "../components/appearance-settings";
 import AccountSettings from "../components/account-settings";
 
-const SettingsPage = () => {
+interface SettingsPageProps {
+  initialData?: any;
+}
+
+const SettingsPage: React.FC<SettingsPageProps> = ({ initialData }) => {
   const [settingsData, setSettingsData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadSettingsData = async () => {
-      try {
-        const result = await getSettingsData();
-        if (result.success) {
-          setSettingsData(result.data);
+    // Use initialData if provided, otherwise fetch
+    if (initialData) {
+      setSettingsData(initialData);
+      setIsLoading(false);
+    } else {
+      const loadSettingsData = async () => {
+        try {
+          const result = await getSettingsData();
+          if (result.success) {
+            setSettingsData(result.data);
+          }
+        } catch (error) {
+          console.error("Error loading settings data:", error);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        console.error("Error loading settings data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      };
 
-    loadSettingsData();
-  }, []);
+      loadSettingsData();
+    }
+  }, [initialData]);
 
   if (isLoading) {
     return (

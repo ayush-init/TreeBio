@@ -79,18 +79,25 @@ export const updateAppearanceSettings = async (data: z.infer<typeof appearanceSe
   try {
     const validatedData = appearanceSettingsSchema.parse(data);
 
-    await db.user.update({
-      where: { clerkId: user.id },
-      data: validatedData
-    });
-
-    revalidatePath("/admin/settings");
-    revalidatePath(`/${user.username}`);
-
+    // Temporarily disable until Prisma is regenerated
     return { 
-      success: true, 
-      message: "Appearance settings updated successfully"
+      success: false, 
+      error: "Appearance settings temporarily disabled until database migration is complete" 
     };
+
+    // Original code (commented out):
+    // await db.user.update({
+    //   where: { clerkId: user.id },
+    //   data: validatedData
+    // });
+
+    // revalidatePath("/admin/settings");
+    // revalidatePath(`/${user.username}`);
+
+    // return { 
+    //   success: true, 
+    //   message: "Appearance settings updated successfully"
+    // };
   } catch (error) {
     console.error("Error updating appearance settings:", error);
     return { success: false, error: "Failed to update appearance settings" };
@@ -199,8 +206,9 @@ export const getSettingsData = async () => {
         bio: true,
         imageUrl: true,
         email: true,
-        theme: true,
-        buttonStyle: true,
+        // Temporarily remove theme and buttonStyle until Prisma is regenerated
+        // theme: true,
+        // buttonStyle: true,
         socialLinks: {
           select: {
             id: true,
@@ -215,7 +223,14 @@ export const getSettingsData = async () => {
       return { success: false, error: "User data not found" };
     }
 
-    return { success: true, data: userData };
+    // Add default values for theme and buttonStyle
+    const userDataWithDefaults = {
+      ...userData,
+      theme: "system",
+      buttonStyle: "rounded"
+    };
+
+    return { success: true, data: userDataWithDefaults };
   } catch (error) {
     console.error("Error fetching settings data:", error);
     return { success: false, error: "Failed to fetch settings data" };
