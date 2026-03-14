@@ -4,8 +4,6 @@ import {
   BarChart3,
   Settings,
   QrCode,
-  TrendingUp,
-  Link2,
 } from "lucide-react";
 import {
   Sidebar,
@@ -48,18 +46,8 @@ const mainNavItems = [
 const toolsItems = [
   {
     title: "QR Code Generator",
-    url: "/admin/tools/qr-code",
+    url: "/admin/qr",
     icon: QrCode,
-  },
-  {
-    title: "Link Shortener",
-    url: "/admin/tools/shortener",
-    icon: Link2,
-  },
-  {
-    title: "Analytics",
-    url: "/admin/tools/analytics",
-    icon: TrendingUp,
   },
 ];
 
