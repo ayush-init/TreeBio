@@ -10,7 +10,7 @@ const Page = async () => {
   const profile = await getCurrentUsername();
   const links = await getAllLinkForUser();
   const previewData = await getPreviewData();
-
+  console.log(profile);
   return (
     <section className="flex flex-col gap-6 px-4 py-6 ">
       {/* Page header */}

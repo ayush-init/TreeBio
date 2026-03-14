@@ -22,6 +22,10 @@ import {
   Camera,
   Edit3,
   X,
+  Linkedin,
+  Github,
+  Twitter,
+  Globe
 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { createUserProfile } from "@/modules/profile/actions";
@@ -334,24 +338,32 @@ const LinkForm = ({ username, bio, link, socialLinks: initialSocialLinks = [] }:
     }
   };
 
-  const getSocialIcon = (platform: string) => {
-    switch (platform) {
-      case "instagram":
-        return Instagram;
-      case "youtube":
-        return Youtube;
-      case "email":
-        return Mail;
-      default:
-        return Mail;
-    }
+const getSocialIcon = (platform: string) => {
+  const icons: Record<string, any> = {
+    instagram: Instagram,
+    youtube: Youtube,
+    email: Mail,
+    linkedin: Linkedin,
+    github: Github,
+    twitter: Twitter,
+    website: Globe,
+    leetcode: Globe,
+    gfg: Globe,
   };
 
-  const socialLinks = [
-    { platform: "instagram" as const, icon: Instagram },
-    { platform: "youtube" as const, icon: Youtube },
-    { platform: "email" as const, icon: Mail },
-  ];
+  return icons[platform] || Globe;
+};
+const socialLinks = [
+  { platform: "instagram" as const, icon: Instagram },
+  { platform: "youtube" as const, icon: Youtube },
+  { platform: "email" as const, icon: Mail },
+  { platform: "linkedin" as const, icon: Linkedin },
+  { platform: "github" as const, icon: Github },
+  { platform: "twitter" as const, icon: Twitter },
+  { platform: "website" as const, icon: Globe },
+  { platform: "leetcode" as const, icon: Globe },
+  { platform: "gfg" as const, icon: Globe },
+];
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6">

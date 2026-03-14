@@ -46,7 +46,8 @@ const LinkPreviewItem = ({ link }: { link: Link }) => {
     <div className="bg-white rounded-lg border border-gray-200 p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
       <div className="flex items-center gap-3">
         <div className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center flex-shrink-0">
-          <Icon size={12} className="text-gray-400" />
+          {/* <Icon size={12} className="text-gray-400" /> */}
+          <img src={link.image} alt={link.title} className="w-full h-full object-cover rounded" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-medium text-sm text-gray-900 truncate">
@@ -77,7 +78,6 @@ const PreviewFrame = async ({ links }: PreviewFrameProps) => {
 
   const userBio = userProfile.bio || "";
   const userAvatar = userProfile.imageUrl || user?.imageUrl || "";
-
   return (
     <div className="flex flex-col items-center space-y-4">
       {/* Mobile Frame */}
@@ -113,6 +113,7 @@ const PreviewFrame = async ({ links }: PreviewFrameProps) => {
 
               {/* Links */}
               <div className="flex-1 space-y-3 overflow-y-auto">
+                
                 {links.map((link) => (
                   <LinkPreviewItem key={link.id} link={link} />
                 ))}
