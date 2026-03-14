@@ -30,6 +30,7 @@ interface LinkItem {
   title: string;
   url: string;
   description?: string;
+  image?: string;
   clickCount: number;
   userId: string;
   createdAt: string;
@@ -279,9 +280,29 @@ export default function TreeBioProfile({ profileData }: TreeBioProfileProps) {
                   rel="noopener noreferrer"
                   className="flex items-center justify-between w-full px-2"
                 >
-                  <span className="flex-1 text-center truncate px-4">
-                    {link.title}
-                  </span>
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    {/* Image Preview */}
+                    {link.image ? (
+                      <img
+                        src={link.image}
+                        alt={link.title}
+                        className="w-8 h-8 object-cover rounded-md flex-shrink-0"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                        }}
+                      />
+                    ) : (
+                      <div className="w-8 h-8 bg-gray-200 dark:bg-zinc-600 rounded-md flex items-center justify-center flex-shrink-0">
+                        <Globe size={16} className="text-gray-400 dark:text-zinc-400" />
+                      </div>
+                    )}
+                    
+                    <span className="text-center truncate flex-1">
+                      {link.title}
+                    </span>
+                  </div>
+                  
                   <div className="flex items-center space-x-2 opacity-60 group-hover:opacity-100 transition-opacity duration-200">
                     <span
                       className={`text-xs transition-colors duration-300 ${theme === "dark" ? "text-zinc-400" : "text-gray-600"

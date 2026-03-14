@@ -61,6 +61,7 @@ const linkSchema = z.object({
     .string()
     .max(200, "Description must be less than 200 characters")
     .optional(),
+  image: z.string().url("Please enter a valid image URL").optional(),
 });
 
 const socialLinkSchema = z.object({
@@ -76,6 +77,7 @@ interface Link {
   title: string;
   url: string;
   description?: string;
+  image?: string;
   clickCount: number;
 }
 
@@ -89,7 +91,16 @@ interface Profile {
 
 interface SocialLink {
   id: string;
-  platform: "instagram" | "youtube" | "email";
+  platform:
+    | "instagram"
+    | "youtube"
+    | "email"
+    | "linkedin"
+    | "github"
+    | "leetcode"
+    | "gfg"
+    | "twitter"
+    | "website";
   url: string;
 }
 
@@ -294,6 +305,32 @@ const LinkForm = ({ username, bio, link, socialLinks: initialSocialLinks = [] }:
     } catch (error) {
       console.error("Error deleting social link:", error);
       toast.error("Failed to delete social link.");
+    }
+  };
+
+  // Link image upload handler
+  const handleLinkImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file
+    const { validateImageFile } = await import("@/lib/cloudinary");
+    if (!validateImageFile(file)) {
+      toast.error("Please upload a valid image file (JPEG, PNG, WebP, GIF) under 5MB");
+      return;
+    }
+
+    try {
+      // Upload to Cloudinary
+      const { uploadToCloudinary } = await import("@/lib/cloudinary");
+      const imageUrl = await uploadToCloudinary(file);
+      
+      // Set the image URL in the form
+      linkForm.setValue("image", imageUrl);
+      toast.success("Image uploaded successfully");
+    } catch (error) {
+      toast.error("Failed to upload image");
+      console.error("Upload error:", error);
     }
   };
 

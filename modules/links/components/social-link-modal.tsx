@@ -16,15 +16,48 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Instagram, Youtube, Mail } from "lucide-react"
+import {
+  Instagram,
+  Youtube,
+  Mail,
+  Linkedin,
+  Github,
+  Code,
+  Globe,
+  Twitter
+} from "lucide-react"
 
 
 const socialLinkSchema = z.object({
-  platform: z.enum(["instagram", "youtube", "email"], {
-    error: "Please select a platform.",
-  }),
+  platform: z.enum(
+    [
+      "instagram",
+      "youtube",
+      "email",
+      "linkedin",
+      "github",
+      "leetcode",
+      "gfg",
+      "website",
+      "twitter"
+    ],
+    {
+      error: "Please select a platform.",
+    }
+  ),
   url: z.string().url("Please enter a valid URL").min(1, "URL is required"),
 })
+const socialIconMap = {
+  instagram: Instagram,
+  youtube: Youtube,
+  email: Mail,
+  linkedin: Linkedin,
+  github: Github,
+  leetcode: Code,
+  gfg: Code,
+  twitter: Twitter,
+  website: Globe,
+}
 
 export type SocialLinkFormData = z.infer<typeof socialLinkSchema>
 
@@ -58,6 +91,12 @@ export const SocialLinkModal: React.FC<SocialLinkModalProps> = ({ isOpen, onClos
   const socialPlatforms = [
     { value: "instagram", label: "Instagram", icon: Instagram },
     { value: "youtube", label: "YouTube", icon: Youtube },
+    { value: "linkedin", label: "LinkedIn", icon: Linkedin },
+    { value: "github", label: "GitHub", icon: Github },
+    { value: "leetcode", label: "LeetCode", icon: Code },
+    { value: "gfg", label: "GeeksforGeeks", icon: Code },
+    { value: "twitter", label: "Twitter", icon: Twitter },
+    { value: "website", label: "Website", icon: Globe },
     { value: "email", label: "Email", icon: Mail },
   ]
 
@@ -78,11 +117,25 @@ export const SocialLinkModal: React.FC<SocialLinkModalProps> = ({ isOpen, onClos
               Platform
             </Label>
             <Select
-              onValueChange={(value) => form.setValue("platform", value as "instagram" | "youtube" | "email")}
+              onValueChange={(value) => form.setValue("platform", value as any)}
               defaultValue={form.getValues("platform")}
             >
               <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Select a platform" />
+                <SelectValue placeholder="Select a platform">
+                  {(() => {
+                    const selectedValue = form.watch("platform");
+                    const selectedIcon = socialIconMap[selectedValue as keyof typeof socialIconMap];
+                    const selectedPlatform = socialPlatforms.find(p => p.value === selectedValue);
+                    return selectedIcon ? (
+                      <div className="flex items-center gap-2">
+                        <selectedIcon size={16} />
+                        {selectedPlatform?.label}
+                      </div>
+                    ) : (
+                      "Select a platform"
+                    );
+                  })()}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {socialPlatforms.map((platform) => (

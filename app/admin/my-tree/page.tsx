@@ -38,7 +38,7 @@ const Page = async () => {
             link={links.data!}
             // @ts-ignore
             socialLinks={profile?.socialLinks!}
-          />
+        />
         </div>
         <div className="order-1 lg:order-2 lg:sticky lg:top-6">
           <PreviewFrame

@@ -74,31 +74,45 @@ const profile = await db.user.update({
     bio:data.bio,
     imageUrl:data.imageUrl,
     username:data.username,
-
-
   }
 })
 
 return {
-  sucess:true,
+  success:true,
   message:"Profile created successfully",
   data:profile
-
 }
 }
 
 export const getUserByUsername = async (username:string)=>{
+  try {
+    if (!username) {
+      return { success: false, error: "Username is required" };
+    }
 
-  const currentUsername = await db.user.findUnique({
-    where:{
-      username:username
-    },
-   include:{
-    
-    links:true,
-    socialLinks:true
-   }
-   
-  })
-  return currentUsername;
+    const userProfile = await db.user.findUnique({
+      where:{
+        username:username
+      },
+      include:{
+        links:true,
+        socialLinks:true
+      }
+    })
+
+    if (!userProfile) {
+      return { success: false, error: "User not found" };
+    }
+
+    return { 
+      success: true, 
+      data: userProfile 
+    };
+  } catch (error) {
+    console.error("Error fetching user by username:", error);
+    return { 
+      success: false, 
+      error: "Failed to fetch user profile" 
+    };
+  }
 }

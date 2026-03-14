@@ -47,21 +47,26 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ initialData }) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // Validate file
+    const { validateImageFile } = await import("@/lib/cloudinary");
+    if (!validateImageFile(file)) {
+      toast.error("Please upload a valid image file (JPEG, PNG, WebP, GIF) under 5MB");
+      return;
+    }
+
     setIsUploading(true);
     try {
-      // For now, we'll use a placeholder URL
-      // In a real app, you'd upload to a service like Cloudinary or AWS S3
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const imageUrl = reader.result as string;
-        setFormData(prev => ({ ...prev, imageUrl }));
-        setIsUploading(false);
-        toast.success("Image uploaded successfully");
-      };
-      reader.readAsDataURL(file);
+      // Upload to Cloudinary
+      const { uploadToCloudinary } = await import("@/lib/cloudinary");
+      const imageUrl = await uploadToCloudinary(file);
+      
+      setFormData(prev => ({ ...prev, imageUrl }));
+      setIsUploading(false);
+      toast.success("Image uploaded successfully");
     } catch (error) {
       setIsUploading(false);
       toast.error("Failed to upload image");
+      console.error("Upload error:", error);
     }
   };
 
@@ -113,7 +118,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ initialData }) => {
                 </AvatarFallback>
               </Avatar>
               <div className="space-y-2">
-                <div className="flex items-center gap-2">
+                <div className="relative inline-block">
                   <Button
                     type="button"
                     variant="outline"
