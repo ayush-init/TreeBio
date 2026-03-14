@@ -21,6 +21,7 @@ interface Link {
   title: string;
   description?: string;
   url: string;
+  image?: string;
   clickCount: number;
   createdAt: Date;
   platform?: string;
@@ -35,6 +36,7 @@ interface Link {
 
 interface PreviewFrameProps {
   links: Link[];
+  socialLinks?: any[];
 }
 
 // Component for individual link (now without OG data for server component)
@@ -46,8 +48,20 @@ const LinkPreviewItem = ({ link }: { link: Link }) => {
     <div className="bg-white rounded-lg border border-gray-200 p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
       <div className="flex items-center gap-3">
         <div className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center flex-shrink-0">
-          {/* <Icon size={12} className="text-gray-400" /> */}
-          <img src={link.image} alt={link.title} className="w-full h-full object-cover rounded" />
+          {link.image ? (
+            <img 
+              src={link.image} 
+              alt={link.title} 
+              className="w-full h-full object-cover rounded"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+          ) : null}
+          {!link.image && (
+            <Icon size={12} className="text-gray-400" />
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-medium text-sm text-gray-900 truncate">
@@ -63,7 +77,7 @@ const LinkPreviewItem = ({ link }: { link: Link }) => {
   );
 };
 
-const PreviewFrame = async ({ links }: PreviewFrameProps) => {
+const PreviewFrame = async ({ links, socialLinks = [] }: PreviewFrameProps) => {
   const user = await currentUser();
 
   // Get user profile data from links or fallback to Clerk user
@@ -113,14 +127,32 @@ const PreviewFrame = async ({ links }: PreviewFrameProps) => {
 
               {/* Links */}
               <div className="flex-1 space-y-3 overflow-y-auto">
+                {/* Social Links */}
+                {socialLinks.map((socialLink) => {
+                  const Icon = socialIconMap[socialLink.platform as keyof typeof socialIconMap] || Globe;
+                  return (
+                    <div key={socialLink.id} className="bg-white rounded-lg border border-gray-200 p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                      <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center flex-shrink-0">
+                          <Icon size={12} className="text-gray-400" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm text-gray-900 truncate capitalize">
+                            {socialLink.platform}
+                          </p>
+                        </div>
+                        <ExternalLink size={14} className="text-gray-400 flex-shrink-0" />
+                      </div>
+                    </div>
+                  );
+                })}
                 
                 {links.map((link) => (
                   <LinkPreviewItem key={link.id} link={link} />
                 ))}
 
                 {/* Empty State */}
-
-                {links.length === 0 && (
+                {links.length === 0 && socialLinks.length === 0 && (
                   <div className="text-center py-8">
                     <p className="text-gray-500 text-sm">No links added yet</p>
                     <p className="text-gray-400 text-xs mt-1">

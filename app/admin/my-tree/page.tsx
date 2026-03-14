@@ -47,6 +47,7 @@ const Page = async () => {
               description:
                 link.description === null ? undefined : link.description,
             }))}
+            socialLinks={profile?.socialLinks || []}
           />
         </div>
       </div>
