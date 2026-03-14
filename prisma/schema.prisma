@@ -49,6 +49,7 @@ model Link {
   title       String
   url         String
   description String? @db.VarChar(500) // 👈 Optional description with a max length of 500 characters
+  image       String? @db.VarChar(500) // 👈 Optional image URL
   clickCount  Int     @default(0)
 
   analytics LinkAnalytics[]

@@ -21,7 +21,7 @@ const AppHeader = () => {
           <Breadcrumb className="flex flex-1 items-center justify-between">
             <BreadcrumbList>
               <BreadcrumbItem  className="hidden md:block">
-                <BreadcrumbLink href="/admin">Dashboard</BreadcrumbLink>
+                <BreadcrumbLink href="/admin/my-tree">Dashboard</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>

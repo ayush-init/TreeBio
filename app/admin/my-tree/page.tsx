@@ -10,7 +10,7 @@ const Page = async () => {
   const profile = await getCurrentUsername();
   const links = await getAllLinkForUser();
   const previewData = await getPreviewData();
-
+  console.log(profile);
   return (
     <section className="flex flex-col gap-6 px-4 py-6 ">
       {/* Page header */}
@@ -38,7 +38,7 @@ const Page = async () => {
             link={links.data!}
             // @ts-ignore
             socialLinks={profile?.socialLinks!}
-          />
+        />
         </div>
         <div className="order-1 lg:order-2 lg:sticky lg:top-6">
           <PreviewFrame

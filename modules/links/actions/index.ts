@@ -17,6 +17,7 @@ export const createLinkByUser = async(data:LinkFormData)=>{
             title: data.title,
             url: data.url,
             description: data.description,
+            image: data.image,
             clickCount: 0,
             user: {
                 connect: {
@@ -24,11 +25,10 @@ export const createLinkByUser = async(data:LinkFormData)=>{
                 }
             }
         }
-      
     });
 
     return {
-        sucess:true,
+        success:true,
         message:"Link created successfully",
         data:link
     }
@@ -48,6 +48,7 @@ export const getAllLinkForUser = async()=>{
             title:true,
             description:true,
             url:true,
+            image:true,
             clickCount:true,
             createdAt:true,
             

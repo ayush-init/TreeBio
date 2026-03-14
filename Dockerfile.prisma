@@ -1,0 +1,17 @@
+# Docker solution for Prisma generation
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+RUN npm install
+
+# Copy your code
+COPY . .
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Start the app
+CMD ["npm", "run", "dev"]

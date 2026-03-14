@@ -22,6 +22,10 @@ import {
   Camera,
   Edit3,
   X,
+  Linkedin,
+  Github,
+  Twitter,
+  Globe
 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { createUserProfile } from "@/modules/profile/actions";
@@ -61,6 +65,7 @@ const linkSchema = z.object({
     .string()
     .max(200, "Description must be less than 200 characters")
     .optional(),
+  image: z.string().url("Please enter a valid image URL").optional(),
 });
 
 const socialLinkSchema = z.object({
@@ -76,6 +81,7 @@ interface Link {
   title: string;
   url: string;
   description?: string;
+  image?: string;
   clickCount: number;
 }
 
@@ -89,7 +95,16 @@ interface Profile {
 
 interface SocialLink {
   id: string;
-  platform: "instagram" | "youtube" | "email";
+  platform:
+    | "instagram"
+    | "youtube"
+    | "email"
+    | "linkedin"
+    | "github"
+    | "leetcode"
+    | "gfg"
+    | "twitter"
+    | "website";
   url: string;
 }
 
@@ -297,24 +312,58 @@ const LinkForm = ({ username, bio, link, socialLinks: initialSocialLinks = [] }:
     }
   };
 
-  const getSocialIcon = (platform: string) => {
-    switch (platform) {
-      case "instagram":
-        return Instagram;
-      case "youtube":
-        return Youtube;
-      case "email":
-        return Mail;
-      default:
-        return Mail;
+  // Link image upload handler
+  const handleLinkImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file
+    const { validateImageFile } = await import("@/lib/cloudinary");
+    if (!validateImageFile(file)) {
+      toast.error("Please upload a valid image file (JPEG, PNG, WebP, GIF) under 5MB");
+      return;
+    }
+
+    try {
+      // Upload to Cloudinary
+      const { uploadToCloudinary } = await import("@/lib/cloudinary");
+      const imageUrl = await uploadToCloudinary(file);
+      
+      // Set the image URL in the form
+      linkForm.setValue("image", imageUrl);
+      toast.success("Image uploaded successfully");
+    } catch (error) {
+      toast.error("Failed to upload image");
+      console.error("Upload error:", error);
     }
   };
 
-  const socialLinks = [
-    { platform: "instagram" as const, icon: Instagram },
-    { platform: "youtube" as const, icon: Youtube },
-    { platform: "email" as const, icon: Mail },
-  ];
+const getSocialIcon = (platform: string) => {
+  const icons: Record<string, any> = {
+    instagram: Instagram,
+    youtube: Youtube,
+    email: Mail,
+    linkedin: Linkedin,
+    github: Github,
+    twitter: Twitter,
+    website: Globe,
+    leetcode: Globe,
+    gfg: Globe,
+  };
+
+  return icons[platform] || Globe;
+};
+const socialLinks = [
+  { platform: "instagram" as const, icon: Instagram },
+  { platform: "youtube" as const, icon: Youtube },
+  { platform: "email" as const, icon: Mail },
+  { platform: "linkedin" as const, icon: Linkedin },
+  { platform: "github" as const, icon: Github },
+  { platform: "twitter" as const, icon: Twitter },
+  { platform: "website" as const, icon: Globe },
+  { platform: "leetcode" as const, icon: Globe },
+  { platform: "gfg" as const, icon: Globe },
+];
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6">

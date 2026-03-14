@@ -159,12 +159,14 @@ interface LinkFormWithPreviewProps {
     title: string;
     url: string;
     description?: string;
+    image?: string;
   }) => void;
   onCancel: () => void;
   defaultValues?: {
     title: string;
     url: string;
     description?: string;
+    image?: string;
   };
 }
 
@@ -179,6 +181,8 @@ export const LinkFormWithPreview: React.FC<LinkFormWithPreviewProps> = ({
   const [description, setDescription] = React.useState(
     defaultValues?.description || ""
   );
+  const [image, setImage] = React.useState(defaultValues?.image || "");
+  const [isUploading, setIsUploading] = React.useState(false);
 
   const { data: ogData, loading } = useOGData(url);
 
@@ -191,13 +195,44 @@ export const LinkFormWithPreview: React.FC<LinkFormWithPreviewProps> = ({
       if (ogData.description && !description) {
         setDescription(ogData.description);
       }
+      if (ogData.image && !image) {
+        setImage(ogData.image);
+      }
     }
-  }, [ogData, title, description, defaultValues]);
+  }, [ogData, title, description, image, defaultValues]);
+
+  // Image upload handler
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file
+    const { validateImageFile } = await import("@/lib/cloudinary");
+    if (!validateImageFile(file)) {
+      // You might want to add a toast here
+      alert("Please upload a valid image file (JPEG, PNG, WebP, GIF) under 5MB");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      // Upload to Cloudinary
+      const { uploadToCloudinary } = await import("@/lib/cloudinary");
+      const imageUrl = await uploadToCloudinary(file);
+      
+      setImage(imageUrl);
+      setIsUploading(false);
+    } catch (error) {
+      setIsUploading(false);
+      alert("Failed to upload image");
+      console.error("Upload error:", error);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsPending(true);
-    onSubmit({ title, url, description });
+    onSubmit({ title, url, description, image });
     setIsPending(false);
   };
 
@@ -217,6 +252,42 @@ export const LinkFormWithPreview: React.FC<LinkFormWithPreviewProps> = ({
             />
           </div>
 
+          {/* Image Upload */}
+          <div className="space-y-2">
+            <Label htmlFor="link-image">Image (Optional)</Label>
+            <div className="flex gap-2">
+              <Input
+                id="link-image"
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
+                placeholder="Image URL or upload an image"
+                className="bg-white flex-1"
+              />
+              <div className="relative">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  disabled={isUploading}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={isUploading}
+                  className="pointer-events-none"
+                >
+                  {isUploading ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    "Upload"
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+
           {/* Preview */}
           {url && (
             <div className="border rounded-lg p-3 bg-gray-50">
@@ -225,6 +296,12 @@ export const LinkFormWithPreview: React.FC<LinkFormWithPreviewProps> = ({
                   <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
                     <Loader2 size={16} className="animate-spin text-gray-400" />
                   </div>
+                ) : image ? (
+                  <img
+                    src={image}
+                    alt="Uploaded image"
+                    className="w-12 h-12 object-cover rounded bg-gray-200"
+                  />
                 ) : ogData?.image ? (
                   <img
                     src={ogData.image || "/placeholder.svg"}
@@ -239,11 +316,11 @@ export const LinkFormWithPreview: React.FC<LinkFormWithPreviewProps> = ({
 
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-sm truncate">
-                    {ogData?.title || "Loading..."}
+                    {title || ogData?.title || "Loading..."}
                   </p>
-                  {ogData?.description && (
+                  {(description || ogData?.description) && (
                     <p className="text-xs text-gray-600 line-clamp-2">
-                      {ogData.description}
+                      {description || ogData?.description}
                     </p>
                   )}
                   <p className="text-xs text-gray-500 truncate">
