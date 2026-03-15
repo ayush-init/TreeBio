@@ -2,17 +2,21 @@
 
 ## Project Overview
 
-**TreeBio** is a Next.js-based link-in-bio application built as an alternative to Linktree. It allows users to create a personalized landing page with multiple links, social media profiles, and provides comprehensive analytics tracking.
+**TreeBio** is a comprehensive Next.js-based link-in-bio application built as a modern alternative to Linktree. It enables users to create personalized landing pages with multiple links, social media profiles, QR code generation, and provides detailed analytics tracking with customizable appearance settings.
 
 ### Tech Stack
-- **Framework**: Next.js 15.4.4 with App Router
-- **Authentication**: Clerk
+- **Framework**: Next.js 15.4.4 with App Router and Turbopack
+- **Authentication**: Clerk with complete user management
 - **Database**: PostgreSQL with Prisma ORM
-- **Styling**: Tailwind CSS with shadcn/ui components
-- **UI Components**: Radix UI primitives
-- **Icons**: Lucide React
-- **Charts**: Recharts
-- **Theme**: Dark/Light mode support with next-themes
+- **Styling**: Tailwind CSS v4 with shadcn/ui components
+- **UI Components**: 47+ Radix UI primitives
+- **Icons**: Lucide React (525+ icons)
+- **Charts**: Recharts for analytics visualization
+- **Theme**: Complete dark/light/system mode support with next-themes
+- **Forms**: React Hook Form with Zod validation
+- **QR Codes**: QRCode generation for profile sharing
+- **Image Handling**: Cloudinary integration
+- **Notifications**: Sonner for toast notifications
 
 ---
 
@@ -31,6 +35,8 @@
 - imageUrl: String?
 - role: Role (USER, CO_ADMIN, ADMIN)
 - bio: String? (Max 500 chars)
+- theme: String (Default: "system") // "light", "dark", "system"
+- buttonStyle: String (Default: "rounded") // "rounded", "pill", "minimal"
 - createdAt: DateTime
 - updatedAt: DateTime
 ```
@@ -41,6 +47,7 @@
 - title: String
 - url: String
 - description: String? (Max 500 chars)
+- image: String? (Max 500 chars, for link previews)
 - clickCount: Int (Default: 0)
 - userId: String (Foreign Key)
 - createdAt: DateTime
@@ -115,14 +122,23 @@
   - Drag-and-drop reordering
   - Click tracking display
 
-#### `/admin/overview` - Analytics Dashboard
-- **File**: `app/admin/overview/page.tsx`
-- **Purpose**: Detailed analytics and insights
+#### `/admin/qr` - QR Code Generation
+- **File**: `app/admin/qr/page.tsx`
+- **Purpose**: Generate QR codes for profile sharing
 - **Features**:
-  - Profile visit statistics
-  - Link click analytics
-  - Time-based filtering
-  - Chart visualizations
+  - Custom QR code generation for user profiles
+  - High-quality QR code export
+  - Profile URL integration
+  - Customizable QR code styling
+
+#### `/admin/settings` - Settings Management
+- **File**: `app/admin/settings/page.tsx`
+- **Purpose**: Comprehensive settings management
+- **Features**:
+  - Profile settings (name, bio, username, profile picture)
+  - Appearance customization (theme, button styles)
+  - Social links management
+  - Account settings and preferences
 
 ---
 
@@ -159,7 +175,20 @@
 - **Social Integration**: Display social media links prominently
 - **Clean UI**: Modern, minimalist design inspired by Linktree
 
-### 6. Admin Dashboard
+### 6. QR Code Generation
+- **Profile QR Codes**: Generate QR codes for easy profile sharing
+- **Custom Styling**: Customizable QR code appearance
+- **High Quality**: Export-ready QR code images
+- **URL Integration**: Automatic profile URL embedding
+
+### 7. Settings & Customization
+- **Profile Management**: Complete control over profile information
+- **Appearance Settings**: Theme selection (light/dark/system)
+- **Button Styles**: Customizable button appearances (rounded/pill/minimal)
+- **Social Links Management**: Add/edit/remove social media profiles
+- **Account Preferences**: User preferences and settings
+
+### 8. Admin Dashboard
 - **Statistics Overview**: Real-time dashboard with key metrics
 - **Link Management**: Easy interface for managing all links
 - **Analytics Dashboard**: Comprehensive analytics with charts
@@ -201,13 +230,16 @@
 - `deleteLink()` / `editLink()`: Link management
 - `addSocialLink()` / `deleteSocialLink()` / `editSocialLink()`: Social media links
 
-### Analytics Module (`modules/analytics/`)
-- `logProfileVist()`: Track profile visits
-- `logLinkClick()`: Track link clicks
-- `getProfileVistCount()`: Get profile visit statistics
-- `getLinkAnalytics()`: Get detailed link analytics
-- `getDailyProfileVisits()` / `getDailyLinkClicks()`: Time-based data
-- `getTopLinks()`: Get best performing links
+### Settings Module (`modules/settings/`)
+- `updateProfileSettings()`: Update user profile information
+- `updateAppearanceSettings()`: Customize theme and button styles
+- `addSocialLink()` / `deleteSocialLink()`: Manage social media links
+- `getSettingsData()`: Retrieve all user settings
+- `deleteAccount()`: Account deletion (with verification)
+
+### QR Code Module (`modules/qr/`)
+- `generateQRCode()`: Generate QR codes for user profiles
+- `getUserProfileData()`: Get profile data for QR generation
 
 ---
 
@@ -237,10 +269,20 @@
 - **Relationship Optimization**: Efficient foreign key relationships
 - **Query Optimization**: Selective field querying to reduce data transfer
 
-### Frontend Performance
-- **Next.js App Router**: Server-side rendering and caching
-- **Component Lazy Loading**: Optimized bundle sizes
-- **Image Optimization**: Next.js Image component usage
+### UI/UX Features
+- **Dark Mode**: Complete dark/light/system theme support
+- **Responsive Design**: Mobile-first approach with breakpoint optimization
+- **Accessibility**: WCAG compliance with Radix UI components
+- **Loading States**: Skeleton loaders and proper error handling
+- **Form Validation**: Zod schema validation with React Hook Form
+- **Toast Notifications**: Sonner for user feedback
+- **Component Library**: 47+ reusable shadcn/ui components
+
+### Development Experience
+- **TypeScript**: Full type safety across the application
+- **ESLint**: Code quality and consistency enforcement
+- **Hot Reload**: Development with Turbopack for faster builds
+- **Component Structure**: Modular architecture with clear separation
 
 ### Analytics Efficiency
 - **Batch Processing**: Transaction-based analytics logging
@@ -249,45 +291,76 @@
 
 ---
 
-## Development Features
+## Advanced Features & Integrations
 
-### Environment Setup
-- **TypeScript**: Full type safety
-- **ESLint**: Code quality enforcement
-- **Prettier**: Code formatting
-- **Hot Reload**: Development with Turbopack
+### Social Media Integration
+- **Platform Support**: Instagram, YouTube, Twitter, LinkedIn, GitHub, Email, and more
+- **Icon Mapping**: Automatic icon selection based on platform
+- **Custom Platforms**: Support for custom social media platforms
+- **Link Validation**: URL validation for social media links
 
-### UI/UX
-- **Dark Mode**: Complete dark/light theme support
-- **Responsive Design**: Mobile-first approach
-- **Accessibility**: WCAG compliance with Radix UI
-- **Loading States**: Proper loading and error handling
+### Link Preview System
+- **Open Graph Fetching**: Automatic metadata extraction from URLs
+- **Image Previews**: Rich link previews with thumbnails
+- **Title & Description**: Automatic extraction of page metadata
+- **Fallback Handling**: Graceful handling of unavailable previews
 
-### Deployment Ready
-- **Environment Variables**: Proper configuration management
-- **Database Migrations**: Prisma migration system
-- **Build Optimization**: Production-ready builds
+### QR Code System
+- **Profile Sharing**: QR codes for easy profile sharing
+- **Custom Styling**: Customizable colors and appearance
+- **High Resolution**: Export-ready QR code images
+- **URL Generation**: Automatic profile URL creation
+
+---
+
+## Component Architecture
+
+### UI Component Library
+The project uses **47+ shadcn/ui components** built on Radix UI primitives:
+- **Form Components**: Input, Select, Checkbox, Radio, Textarea
+- **Navigation**: Sidebar, Menubar, Breadcrumb, Pagination
+- **Feedback**: Alert, Dialog, Drawer, Toast (Sonner)
+- **Data Display**: Table, Card, Badge, Avatar, Skeleton
+- **Charts**: Recharts integration for analytics
+- **Layout**: Separator, Scroll Area, Resizable Panels
+
+### Module Structure
+```
+modules/
+├── analytics/     # Analytics tracking and reporting
+├── auth/          # Authentication and user onboarding
+├── dashboard/     # Dashboard components and layouts
+├── home/          # Landing page components
+├── links/         # Link management and preview
+├── profile/       # Public profile display
+├── qr/            # QR code generation
+└── settings/      # Settings and preferences
+```
 
 ---
 
 ## Future Enhancement Opportunities
 
 ### Potential Features
-1. **Custom Themes**: Allow users to customize profile appearance
+1. **Advanced Customization**: Enhanced profile themes and layouts
 2. **Link Scheduling**: Schedule links to appear/disappear at specific times
-3. **QR Code Generation**: Generate QR codes for profiles
-4. **Link Groups**: Organize links into categories
-5. **Advanced Analytics**: Heatmaps, geographic data, device tracking
-6. **Integration APIs**: Allow third-party integrations
-7. **Team Accounts**: Multiple users managing one profile
-8. **Monetization**: Premium features, analytics, custom domains
+3. **Link Groups**: Organize links into categories and folders
+4. **Advanced Analytics**: Heatmaps, geographic data, device tracking
+5. **Integration APIs**: Allow third-party integrations and webhooks
+6. **Team Accounts**: Multiple users managing one profile
+7. **Monetization**: Premium features, advanced analytics, custom domains
+8. **Mobile App**: React Native companion application
+9. **Email Campaigns**: Newsletter integration and email marketing
+10. **A/B Testing**: Test different profile layouts and link placements
 
 ### Technical Improvements
 1. **Caching Layer**: Redis for frequently accessed data
 2. **CDN Integration**: For faster asset delivery
-3. **Background Jobs**: For analytics processing
-4. **Real-time Updates**: WebSocket for live analytics
-5. **Mobile App**: React Native companion app
+3. **Background Jobs**: For analytics processing and email campaigns
+4. **Real-time Updates**: WebSocket for live analytics and notifications
+5. **Performance Monitoring**: Integration with APM tools
+6. **API Rate Limiting**: Prevent abuse and ensure stability
+7. **Database Optimization**: Query optimization and connection pooling
 
 ---
 
@@ -303,27 +376,35 @@ treebio/
 │   ├── (profile)/              # Public profiles
 │   │   └── [username]/
 │   ├── admin/                  # Protected admin area
-│   │   ├── my-tree/
-│   │   └── overview/
+│   │   ├── my-tree/            # Link management
+│   │   ├── overview/           # Analytics dashboard
+│   │   ├── qr/                 # QR code generation
+│   │   └── settings/           # Settings management
 │   ├── api/                    # API routes
-│   │   └── og-data/
+│   │   └── og-data/           # Open Graph data fetcher
 │   ├── layout.tsx              # Root layout
 │   └── globals.css             # Global styles
 ├── components/                 # Reusable components
-│   ├── ui/                     # shadcn/ui components
+│   ├── ui/                     # shadcn/ui components (47+ components)
 │   ├── theme-provider.tsx      # Theme context
 │   └── theme-toggle.tsx        # Theme switcher
 ├── modules/                    # Feature modules
-│   ├── analytics/              # Analytics logic
+│   ├── analytics/              # Analytics logic and components
 │   ├── auth/                   # Authentication actions
 │   ├── dashboard/              # Dashboard components
 │   ├── home/                   # Home page components
-│   ├── links/                  # Link management
-│   └── profile/                # Profile management
+│   ├── links/                  # Link management and preview
+│   ├── profile/                # Profile management
+│   ├── qr/                     # QR code generation
+│   └── settings/               # Settings and preferences
 ├── lib/                        # Utility libraries
+│   ├── db.ts                   # Database connection
+│   ├── utils.ts                # Utility functions
+│   └── cloudinary.ts           # Image handling
 ├── prisma/                     # Database schema & migrations
 ├── public/                     # Static assets
-└── hooks/                      # Custom React hooks
+├── hooks/                      # Custom React hooks
+└── middleware.ts               # Clerk authentication middleware
 ```
 
 ---
@@ -334,11 +415,12 @@ treebio/
 - Node.js 18+ 
 - PostgreSQL database
 - Clerk account for authentication
+- Cloudinary account (for image handling)
 
 ### Installation
 1. Clone the repository
 2. Install dependencies: `npm install`
-3. Set up environment variables
+3. Set up environment variables (see below)
 4. Run database migrations: `npx prisma migrate dev`
 5. Start development server: `npm run dev`
 
@@ -347,6 +429,64 @@ treebio/
 DATABASE_URL="postgresql://..."
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="..."
 CLERK_SECRET_KEY="..."
+NEXT_PUBLIC_APP_URL="http://localhost:3000" # or your production URL
+CLOUDINARY_CLOUD_NAME="..."
+CLOUDINARY_API_KEY="..."
+CLOUDINARY_API_SECRET="..."
 ```
 
-This documentation provides a comprehensive overview of the TreeBio project's architecture, features, and implementation details. The project is well-structured, scalable, and follows modern web development best practices.
+### Development Commands
+```bash
+npm run dev          # Start development server with Turbopack
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npx prisma studio    # Open Prisma Studio
+npx prisma migrate dev  # Run database migrations
+```
+
+---
+
+## Project Statistics & Metrics
+
+### Codebase Overview
+- **Total Files**: 200+ files including components, modules, and configurations
+- **UI Components**: 47+ shadcn/ui components
+- **Modules**: 8 feature modules with clear separation of concerns
+- **Database Models**: 5 main models with optimized relationships
+- **API Endpoints**: RESTful API with Open Graph integration
+- **Pages**: 8 main pages with authentication protection
+
+### Dependencies Summary
+- **Production Dependencies**: 65 packages
+- **Development Dependencies**: 8 packages
+- **Core Technologies**: Next.js, React, TypeScript, Prisma, Clerk
+- **UI Framework**: Tailwind CSS v4, Radix UI, Lucide React
+- **Analytics**: Recharts for data visualization
+- **Forms**: React Hook Form with Zod validation
+
+---
+
+## Security & Best Practices
+
+### Authentication Security
+- **Clerk Integration**: Enterprise-grade authentication
+- **Route Protection**: Middleware-based route protection
+- **Session Management**: Secure session handling
+- **User Isolation**: Proper data access controls
+
+### Data Security
+- **Input Validation**: Zod schema validation throughout
+- **SQL Injection Prevention**: Prisma ORM protection
+- **XSS Prevention**: React's built-in protections
+- **CSRF Protection**: Next.js built-in CSRF protection
+
+### Privacy & Analytics
+- **IP Hashing**: Secure IP storage for analytics
+- **Rate Limiting**: Prevention of duplicate tracking
+- **Data Minimization**: Only essential data collection
+- **GDPR Compliance**: Privacy-focused design
+
+---
+
+This comprehensive documentation showcases TreeBio as a production-ready, feature-rich link-in-bio platform with modern architecture, extensive functionality, and excellent development practices. The project demonstrates expertise in full-stack development with Next.js, proper database design, and user experience optimization.

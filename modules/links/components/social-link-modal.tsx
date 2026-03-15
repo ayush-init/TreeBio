@@ -126,9 +126,9 @@ export const SocialLinkModal: React.FC<SocialLinkModalProps> = ({ isOpen, onClos
                     const selectedValue = form.watch("platform");
                     const selectedIcon = socialIconMap[selectedValue as keyof typeof socialIconMap];
                     const selectedPlatform = socialPlatforms.find(p => p.value === selectedValue);
-                    return selectedIcon ? (
+                    return selectedValue && selectedIcon ? (
                       <div className="flex items-center gap-2">
-                        <selectedIcon size={16} />
+                        {React.createElement(selectedIcon, { size: 16 })}
                         {selectedPlatform?.label}
                       </div>
                     ) : (

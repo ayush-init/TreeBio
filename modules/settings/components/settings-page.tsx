@@ -17,6 +17,7 @@ import ProfileSettings from "../components/profile-settings";
 import SocialSettings from "../components/social-settings";
 import AppearanceSettings from "../components/appearance-settings";
 import AccountSettings from "../components/account-settings";
+import { SettingsShimmer } from "./settings-shimmer";
 
 interface SettingsPageProps {
   initialData?: any;
@@ -27,52 +28,34 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ initialData }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Use initialData if provided, otherwise fetch
-    if (initialData) {
-      setSettingsData(initialData);
-      setIsLoading(false);
-    } else {
-      const loadSettingsData = async () => {
-        try {
-          const result = await getSettingsData();
-          if (result.success) {
-            setSettingsData(result.data);
+    // Always show loading for a brief moment to create smooth transition
+    const timer = setTimeout(() => {
+      if (initialData) {
+        setSettingsData(initialData);
+      } else {
+        const loadSettingsData = async () => {
+          try {
+            const result = await getSettingsData();
+            if (result.success) {
+              setSettingsData(result.data);
+            }
+          } catch (error) {
+            console.error("Error loading settings data:", error);
           }
-        } catch (error) {
-          console.error("Error loading settings data:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
+        };
 
-      loadSettingsData();
-    }
+        loadSettingsData();
+      }
+      setIsLoading(false);
+    }, 300); // 300ms delay to show shimmer
+
+    return () => clearTimeout(timer);
   }, [initialData]);
 
   if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-            <p className="text-muted-foreground">Manage your TreeBio account and preferences</p>
-          </div>
-        </div>
-        
-        <div className="space-y-6">
-          <Card className="animate-pulse">
-            <CardHeader>
-              <div className="h-6 bg-muted rounded w-1/4"></div>
-              <div className="h-4 bg-muted rounded w-1/3"></div>
-            </CardHeader>
-            <CardContent>
-              <div className="h-64 bg-muted rounded"></div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
+    return <SettingsShimmer />;
   }
+
 
   return (
     <div className="space-y-6">

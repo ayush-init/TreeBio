@@ -41,21 +41,21 @@ export const claimUsername = async (username: string) => {
 export const getCurrentUsername = async ()=>{
   const user = await currentUser();
 
+  const currentUsername = await db.user.findUnique({
+    where:{
+      clerkId:user?.id
+    },
+    select:{
+      username:true,
+      bio:true,
+      firstName:true,
+      lastName:true,
+      imageUrl:true,
+      socialLinks:true
+    },
+  })
 
-
-const currentUsername = await db.user.findUnique({
-  where:{
-    clerkId:user?.id
-  },
-  select:{
-    username:true,
-    bio:true,
-    socialLinks:true
-  },
- 
-})
-
-return currentUsername;
+  return currentUsername;
 }
 
 
@@ -64,24 +64,24 @@ export const createUserProfile = async (data:ProfileFormData)=>{
 
   if (!user) return { success: false, error: "No authenticated user found" };
 
-const profile = await db.user.update({
-  where:{
-    clerkId:user.id
-  },
-  data:{
-    firstName:data.firstName,
-    lastName:data.lastName,
-    bio:data.bio,
-    imageUrl:data.imageUrl,
-    username:data.username,
-  }
-})
+  const profile = await db.user.update({
+    where:{
+      clerkId:user.id
+    },
+    data:{
+      firstName:data.firstName,
+      lastName:data.lastName,
+      bio:data.bio,
+      imageUrl:data.imageUrl,
+      username:data.username,
+    }
+  })
 
-return {
-  success:true,
-  message:"Profile created successfully",
-  data:profile
-}
+  return {
+    success:true,
+    message:"Profile created successfully",
+    data:profile
+  }
 }
 
 export const getUserByUsername = async (username:string)=>{

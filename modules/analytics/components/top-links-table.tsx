@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-
 import { ExternalLink, MousePointer } from "lucide-react"
 import { getTopLinks } from "../actions"
+import { Shimmer } from "@/components/ui/shimmer"
 
 interface TopLinksTableProps {
   userId: string
@@ -18,7 +18,31 @@ export async function TopLinksTable({ userId }: TopLinksTableProps) {
           <CardDescription className="text-zinc-600 dark:text-zinc-400">Your most clicked links</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-zinc-500 dark:text-zinc-400">No links created yet</div>
+          <div className="space-y-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex items-center justify-between p-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700"
+              >
+                <div className="flex items-center space-x-3 flex-1 min-w-0">
+                  <div className="flex-shrink-0 w-8 h-8 bg-zinc-200 dark:bg-zinc-700 rounded-full flex items-center justify-center">
+                    <Shimmer className="text-sm font-medium text-zinc-600 dark:text-zinc-400 w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <Shimmer className="h-4 w-3/4" />
+                    <Shimmer className="h-3 w-1/2" />
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2 flex-shrink-0">
+                  <div className="flex items-center space-x-1">
+                    <Shimmer variant="circle" className="h-3 w-3" />
+                    <Shimmer className="h-3 w-8" />
+                  </div>
+                  <Shimmer variant="circle" className="h-3 w-3" />
+                </div>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
     )

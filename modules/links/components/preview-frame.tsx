@@ -1,8 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ExternalLink, Star, Globe, Instagram, Youtube, Mail, Linkedin, Github, Code, Twitter } from "lucide-react";
-import { currentUser } from "@clerk/nextjs/server";
+import { LinkImage } from "./link-image";
+import React from "react";
 
-// Social icon mapping
+// Types & Map remain exactly as you provided
 const socialIconMap = {
   instagram: Instagram,
   youtube: Youtube,
@@ -15,12 +16,12 @@ const socialIconMap = {
   website: Globe,
 }
 
-// Types
 interface Link {
   id: string;
   title: string;
   description?: string;
   url: string;
+  image?: string | null;
   clickCount: number;
   createdAt: Date;
   platform?: string;
@@ -35,119 +36,141 @@ interface Link {
 
 interface PreviewFrameProps {
   links: Link[];
+  socialLinks?: any[];
+  currentUser?: {
+    firstName?: string;
+    lastName?: string;
+    imageUrl?: string;
+  };
 }
 
-// Component for individual link (now without OG data for server component)
 const LinkPreviewItem = ({ link }: { link: Link }) => {
-  // Get the correct icon based on platform
-  const Icon = link.platform ? socialIconMap[link.platform as keyof typeof socialIconMap] || Globe : Globe;
-
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-      <div className="flex items-center gap-3">
-        <div className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center flex-shrink-0">
-          {/* <Icon size={12} className="text-gray-400" /> */}
-          <img src={link.image} alt={link.title} className="w-full h-full object-cover rounded" />
+    <div className="link-preview-item bg-white rounded-xl border border-gray-200 p-4 shadow-sm cursor-pointer relative overflow-hidden group">
+      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/8 via-teal-500/8 to-emerald-500/8 dark:from-emerald-400/15 dark:via-teal-400/15 dark:to-emerald-400/15 opacity-0  transition-all duration-500 ease-out" />
+      <div className="relative flex items-center gap-3">
+        <div className="w-8 h-8 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center flex-shrink-0  transition-transform duration-200 shadow-sm">
+          <LinkImage src={link.image} alt={link.title} iconName={link.platform} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-medium text-sm text-gray-900 truncate">
+          <p className="font-semibold text-sm text-gray-900 truncate  transition-colors duration-200">
             {link.title}
           </p>
           {link.description && (
-            <p className="text-xs text-gray-500 truncate">{link.description}</p>
+            <p className="text-xs text-gray-500 truncate mt-0.5">{link.description}</p>
           )}
         </div>
-        <ExternalLink size={14} className="text-gray-400 flex-shrink-0" />
+        <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all duration-200 transform translate-x-1 group-hover:translate-x-0">
+          <ExternalLink size={14} className="text-emerald-500" />
+        </div>
       </div>
+      <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-emerald-400 to-teal-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-left" />
     </div>
   );
 };
 
-const PreviewFrame = async ({ links }: PreviewFrameProps) => {
-  const user = await currentUser();
-
-  // Get user profile data from links or fallback to Clerk user
+const PreviewFrame = ({ links, socialLinks = [], currentUser }: PreviewFrameProps) => {
   const userProfile = links[0]?.user || {};
   const displayName =
     userProfile.username ||
-    `${userProfile.firstName || ""}${
-      userProfile.lastName ? " " + userProfile.lastName : ""
-    }`.trim() ||
-    user?.firstName ||
+    `${userProfile.firstName || ""}${userProfile.lastName ? " " + userProfile.lastName : ""}`.trim() ||
+    currentUser?.firstName ||
     "User";
 
   const userBio = userProfile.bio || "";
-  const userAvatar = userProfile.imageUrl || user?.imageUrl || "";
+  const userAvatar = userProfile.imageUrl || currentUser?.imageUrl || "";
+
   return (
-    <div className="flex flex-col items-center space-y-4">
-      {/* Mobile Frame */}
-      <div className="relative">
-        {/* Phone Frame */}
-        <div className="w-[280px] h-[580px] bg-zinc-700 rounded-[2.5rem] p-2 shadow-2xl">
-          {/* Screen */}
-          <div className="w-full h-full bg-gray-50 rounded-[2rem] overflow-hidden relative">
-            {/* Status Bar */}
-            <div className="absolute top-0 left-0 right-0 h-6 bg-transparent flex items-center justify-center">
-              <div className="w-20 h-1 bg-zinc-700 rounded-full"></div>
-            </div>
+    <div className="flex flex-col items-center py-8">
+      {/* --- ENHANCED OUTER FRAME START --- */}
+      <div className="relative group">
+        {/* Physical Buttons (Side) */}
+        <div className="absolute -left-[2px] top-24 w-[3px] h-10 bg-zinc-800 rounded-l-md border-l border-zinc-700" />
+        <div className="absolute -left-[2px] top-40 w-[3px] h-16 bg-zinc-800 rounded-l-md border-l border-zinc-700" />
+        <div className="absolute -left-[2px] top-60 w-[3px] h-16 bg-zinc-800 rounded-l-md border-l border-zinc-700" />
+        <div className="absolute -right-[2px] top-44 w-[3px] h-24 bg-zinc-800 rounded-r-md border-r border-zinc-700" />
 
-            {/* Content */}
-            <div className="pt-8 pb-4 px-4 h-full flex flex-col">
-              {/* Profile Section */}
-              <div className="flex flex-col items-center text-center space-y-3 mb-6">
-                <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
-                  <AvatarImage src={userAvatar} alt={displayName} />
-                  <AvatarFallback className="text-lg font-semibold bg-gray-200 text-gray-600">
-                    {displayName.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <h2 className="font-semibold text-lg text-gray-900">
-                    {displayName}
-                  </h2>
-                  {userBio && (
-                    <p className="text-sm text-gray-600 mt-1">{userBio}</p>
-                  )}
-                </div>
+        {/* Main Chassis */}
+        <div className="w-[300px] h-[600px] bg-[#0c0c0c] rounded-[3.5rem] p-3 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5),0_30px_60px_-30px_rgba(0,0,0,0.6)] ring-1 ring-white/10 relative transition-transform duration-500 ">
+          
+          {/* Inner Glossy Bezel */}
+          <div className="w-full h-full bg-zinc-900 rounded-[2.8rem] p-1.5 shadow-inner">
+            
+            {/* Screen Glass */}
+            <div className="w-full h-full bg-gradient-to-br from-white to-gray-50 rounded-[2.4rem] overflow-hidden relative shadow-2xl">
+
+              {/* Dynamic Island */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-b-2xl z-50 flex items-center justify-center">
+                <div className="w-10 h-1 bg-zinc-800/50 rounded-full" />
+                <div className="absolute right-4 w-1.5 h-1.5 bg-blue-500/20 rounded-full blur-[1px]" />
               </div>
 
-              {/* Links */}
-              <div className="flex-1 space-y-3 overflow-y-auto">
+              {/* Content Container (Your original logic) */}
+              <div className="pt-10 pb-6 px-5 h-full flex flex-col relative z-10">
                 
-                {links.map((link) => (
-                  <LinkPreviewItem key={link.id} link={link} />
-                ))}
-
-                {/* Empty State */}
-
-                {links.length === 0 && (
-                  <div className="text-center py-8">
-                    <p className="text-gray-500 text-sm">No links added yet</p>
-                    <p className="text-gray-400 text-xs mt-1">
-                      Add some links to see them here
-                    </p>
+                {/* Profile Section */}
+                <div className="flex flex-col items-center text-center space-y-4 mb-6">
+                  <div className="relative group/avatar">
+                    <Avatar className="h-24 w-24 border-4 border-white shadow-xl transition-transform duration-300">
+                      <AvatarImage src={userAvatar} alt={displayName} />
+                      <AvatarFallback className="text-xl font-bold bg-gradient-to-br from-emerald-400 to-teal-500 text-white">
+                        {displayName.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="absolute inset-0 rounded-full border-2 border-emerald-400/20 scale-110" />
                   </div>
-                )}
-              </div>
 
-              {/* Footer */}
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <div className="bg-white rounded-lg border border-gray-200 p-2 mb-3">
-                  <div className="flex items-center justify-center gap-2 text-xs text-gray-600">
-                    <Star size={12} />
-                    <span>Join {displayName.toLowerCase()} on TreeBio</span>
+                  <div className="space-y-2">
+                    <h2 className="font-bold text-xl text-gray-900 tracking-tight">
+                      {displayName}
+                    </h2>
+                    {userBio && (
+                      <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">{userBio}</p>
+                    )}
                   </div>
                 </div>
-                <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
-                  <button className="hover:text-gray-700">Report</button>
-                  <span>•</span>
-                  <button className="hover:text-gray-700">Privacy</button>
+
+                {/* Links Container */}
+                <div className="flex-1 links-container overflow-hidden">
+                <div className="h-full space-y-3 overflow-y-auto pr-1 preview-links-scrollbar">
+                    {links.map((link) => (
+                      <LinkPreviewItem key={link.id} link={link} />
+                    ))}
+
+                    {links.length === 0 && socialLinks.length === 0 && (
+                      <div className="text-center py-12">
+                        <div className="w-16 h-16 bg-gray-100 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                          <ExternalLink className="w-8 h-8 text-gray-400" />
+                        </div>
+                        <p className="text-gray-500 text-sm font-medium">No links added yet</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="mt-6 pt-4 border-t border-gray-100">
+                  <div className="bg-emerald-50 rounded-xl border border-emerald-100 p-3 mb-3">
+                    <div className="flex items-center justify-center gap-2 text-xs text-emerald-700 font-bold uppercase tracking-wider">
+                      <Star className="w-3.5 h-3.5 fill-current" />
+                      <span>TreeBio</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center gap-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    <span>Report</span>
+                    <span className="opacity-30">•</span>
+                    <span>Privacy</span>
+                  </div>
                 </div>
               </div>
+              
+              {/* Home Indicator */}
+              <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-28 h-1 bg-gray-300/50 rounded-full" />
             </div>
           </div>
         </div>
       </div>
+      {/* --- ENHANCED OUTER FRAME END --- */}
     </div>
   );
 };

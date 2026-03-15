@@ -3,6 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import { Shimmer } from "@/components/ui/shimmer"
 
 interface ProfileVisitsChartProps {
   data: Array<{ date: string; visits: number }> | null
@@ -19,8 +20,22 @@ export function ProfileVisitsChart({ data }: ProfileVisitsChartProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-[300px] flex items-center justify-center text-zinc-500 dark:text-zinc-400">
-            No visit data available
+          <div className="h-[300px] relative">
+            {/* Enhanced chart shimmer */}
+            <div className="absolute inset-0 flex items-end justify-between px-4 pb-4">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <div key={i} className="flex flex-col items-center flex-1">
+                  <Shimmer className="w-full h-24 mb-2" />
+                  <Shimmer className="h-3 w-8" />
+                </div>
+              ))}
+            </div>
+            {/* Y-axis shimmer */}
+            <div className="absolute left-0 top-0 bottom-0 w-8 flex flex-col justify-between py-4">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Shimmer key={i} className="h-3 w-6" />
+              ))}
+            </div>
           </div>
         </CardContent>
       </Card>

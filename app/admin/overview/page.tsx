@@ -5,6 +5,7 @@ import { RecentActivity } from '@/modules/analytics/components/recent-activity';
 import { TopLinksTable } from '@/modules/analytics/components/top-links-table';
 import { currentUser } from '@clerk/nextjs/server'
 import React from 'react'
+import { OverviewShimmer } from '@/modules/analytics/components/overview-shimmer';
 
 const OverviewPage = async() => {
   const user = await currentUser();
@@ -15,6 +16,11 @@ const OverviewPage = async() => {
   });
 
   const userId = id?.id;
+
+  // Show shimmer if no userId
+  if (!userId) {
+    return <OverviewShimmer />;
+  }
 
   return (
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6">
@@ -27,20 +33,20 @@ const OverviewPage = async() => {
           </p>
         </div>
 
-        <OverviewCards userId={userId!} />
+        <OverviewCards userId={userId} />
 
      
         <div className="grid gap-6 lg:grid-cols-2">
        
           <div className="lg:col-span-2">
-            <AnalyticsWrapper userId={userId!} />
+            <AnalyticsWrapper userId={userId} />
           </div>
 
       
-          <TopLinksTable userId={userId!} />
+          <TopLinksTable userId={userId} />
 
         
-          <RecentActivity userId={userId!} />
+          <RecentActivity userId={userId} />
         </div>
       </div>
     </div>

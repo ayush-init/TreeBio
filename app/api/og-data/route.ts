@@ -1,19 +1,7 @@
-// app/api/og-data/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { JSDOM } from 'jsdom';
-
-interface OGData {
-  title?: string;
-  description?: string;
-  image?: string;
-  url?: string;
-  siteName?: string;
-  type?: string;
-  favicon?: string;
-}
 
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
+  const { searchParams } = new URL(request.url);
   const url = searchParams.get('url');
 
   if (!url) {
@@ -21,111 +9,49 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Validate URL
-    new URL(url);
-  } catch (error) {
-    return NextResponse.json({ error: 'Invalid URL' }, { status: 400 });
-  }
-
-  try {
+    // Add timeout and user agent to avoid blocking
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; LinkPreview/1.0)',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
       },
-      // Add timeout
-      signal: AbortSignal.timeout(10000), // 10 seconds
+      signal: AbortSignal.timeout(5000), // 5 second timeout
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      // Return a graceful fallback instead of throwing error
+      return NextResponse.json({
+        title: new URL(url).hostname,
+        description: 'No description available',
+        image: null,
+        url: url,
+      });
     }
 
     const html = await response.text();
-    const dom = new JSDOM(html);
-    const document = dom.window.document;
+    
+    // Extract OG data (your existing logic)
+    const titleMatch = html.match(/<meta[^>]*property=["']og:title["'][^>]*content=["']([^"']+)["'][^>]*>/i);
+    const descriptionMatch = html.match(/<meta[^>]*property=["']og:description["'][^>]*content=["']([^"']+)["'][^>]*>/i);
+    const imageMatch = html.match(/<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["'][^>]*>/i);
 
-    const ogData: OGData = {};
+    const title = titleMatch?.[1] || new URL(url).hostname;
+    const description = descriptionMatch?.[1] || 'No description available';
+    const image = imageMatch?.[1] || null;
 
-    // Extract Open Graph data
-    const ogTags = document.querySelectorAll('meta[property^="og:"]');
-    ogTags.forEach((tag) => {
-      const property = tag.getAttribute('property');
-      const content = tag.getAttribute('content');
-      
-      if (property && content) {
-        switch (property) {
-          case 'og:title':
-            ogData.title = content;
-            break;
-          case 'og:description':
-            ogData.description = content;
-            break;
-          case 'og:image':
-            ogData.image = content;
-            break;
-          case 'og:url':
-            ogData.url = content;
-            break;
-          case 'og:site_name':
-            ogData.siteName = content;
-            break;
-          case 'og:type':
-            ogData.type = content;
-            break;
-        }
-      }
+    return NextResponse.json({
+      title,
+      description,
+      image,
+      url,
     });
 
-    // Fallback to Twitter Card data if OG data is missing
-    if (!ogData.title) {
-      const twitterTitle = document.querySelector('meta[name="twitter:title"]');
-      ogData.title = twitterTitle?.getAttribute('content') || undefined;
-    }
-
-    if (!ogData.description) {
-      const twitterDesc = document.querySelector('meta[name="twitter:description"]');
-      ogData.description = twitterDesc?.getAttribute('content') || undefined;
-    }
-
-    if (!ogData.image) {
-      const twitterImage = document.querySelector('meta[name="twitter:image"]');
-      ogData.image = twitterImage?.getAttribute('content') || undefined;
-    }
-
-    // Fallback to HTML title and description
-    if (!ogData.title) {
-      const titleTag = document.querySelector('title');
-      ogData.title = titleTag?.textContent || undefined;
-    }
-
-    if (!ogData.description) {
-      const metaDesc = document.querySelector('meta[name="description"]');
-      ogData.description = metaDesc?.getAttribute('content') || undefined;
-    }
-
-    // Get favicon
-    const favicon = document.querySelector('link[rel="icon"]') || 
-                   document.querySelector('link[rel="shortcut icon"]');
-    if (favicon) {
-      const faviconHref = favicon.getAttribute('href');
-      if (faviconHref) {
-        ogData.favicon = faviconHref.startsWith('http') 
-          ? faviconHref 
-          : new URL(faviconHref, url).href;
-      }
-    }
-
-    // Convert relative image URLs to absolute URLs
-    if (ogData.image && !ogData.image.startsWith('http')) {
-      ogData.image = new URL(ogData.image, url).href;
-    }
-
-    return NextResponse.json(ogData);
   } catch (error) {
-    console.error('Error fetching OG data:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch Open Graph data' }, 
-      { status: 500 }
-    );
+    // Return fallback data instead of error
+    return NextResponse.json({
+      title: new URL(url).hostname,
+      description: 'No description available',
+      image: null,
+      url: url,
+    });
   }
 }

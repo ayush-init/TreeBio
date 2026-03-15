@@ -41,7 +41,7 @@ model User {
 
   links        Link[]
   socialLinks  SocialLink[]
-  profileViews ProfileAnalytics[]
+  profileAnalytics ProfileAnalytics[]
 }
 
 model Link {
