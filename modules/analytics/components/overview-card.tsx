@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-
 import { Eye, Link, MousePointer, TrendingUp } from "lucide-react"
 import { getAnalyticsSummary } from "../actions"
+import { Shimmer } from "@/components/ui/shimmer"
 
 interface OverviewCardsProps {
   userId: string
@@ -16,10 +16,12 @@ export async function OverviewCards({ userId }: OverviewCardsProps) {
         {Array.from({ length: 4 }).map((_, i) => (
           <Card key={i} className="bg-zinc-50 dark:bg-zinc-900">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Loading...</CardTitle>
+              <Shimmer className="h-4 w-24 bg-gray-200 dark:bg-gray-700 animate-pulse" />
+              <Shimmer variant="circle" className="h-4 w-4 bg-gray-200 dark:bg-gray-700 animate-pulse" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">--</div>
+              <Shimmer className="h-8 w-16 mb-2 bg-gray-200 dark:bg-gray-700 animate-pulse" />
+              <Shimmer className="h-3 w-32 bg-gray-200 dark:bg-gray-700 animate-pulse" />
             </CardContent>
           </Card>
         ))}

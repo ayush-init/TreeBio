@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-
 import { Clock, Globe } from "lucide-react"
 import { getRecentProfileVisitors } from "../actions"
+import { Shimmer } from "@/components/ui/shimmer"
 
 interface RecentActivityProps {
   userId: string
@@ -18,7 +18,25 @@ export async function RecentActivity({ userId }: RecentActivityProps) {
           <CardDescription className="text-zinc-600 dark:text-zinc-400">Latest profile visitors</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-zinc-500 dark:text-zinc-400">No recent activity</div>
+          <div className="space-y-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex items-center justify-between p-2 rounded-md bg-zinc-100 dark:bg-zinc-800">
+                <div className="flex items-center space-x-3">
+                  <div className="flex-shrink-0">
+                    <Shimmer variant="circle" className="w-4 h-4" />
+                  </div>
+                  <div className="space-y-1">
+                    <Shimmer className="h-4 w-32" />
+                    <Shimmer className="h-3 w-24" />
+                  </div>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Shimmer variant="circle" className="h-3 w-3" />
+                  <Shimmer className="h-3 w-20" />
+                </div>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
     )

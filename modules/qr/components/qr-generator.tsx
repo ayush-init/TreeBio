@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Copy, Download, QrCode, Share2, User, Globe } from "lucide-react";
 import { generateQRCode, getUserProfileData } from "../actions";
 import { toast } from "sonner";
+import { QRShimmer } from "./qr-shimmer";
 
 interface QRCodeGeneratorProps {}
 
@@ -90,41 +91,44 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = () => {
     }
   };
 
+  // if (isLoading) {
+  //   return (
+  //     <div className="space-y-6">
+  //       <div className="flex items-center justify-between">
+  //         <div>
+  //           <h1 className="text-3xl font-bold tracking-tight">QR Code Generator</h1>
+  //           <p className="text-muted-foreground">Generate a QR code for your TreeBio profile</p>
+  //         </div>
+  //       </div>
+  //       <div className="grid gap-6 md:grid-cols-2">
+  //         <Card className="animate-pulse">
+  //           <CardHeader>
+  //             <div className="h-6 bg-muted rounded w-3/4"></div>
+  //             <div className="h-4 bg-muted rounded w-1/2"></div>
+  //           </CardHeader>
+  //           <CardContent>
+  //             <div className="h-64 bg-muted rounded"></div>
+  //           </CardContent>
+  //         </Card>
+  //         <Card className="animate-pulse">
+  //           <CardHeader>
+  //             <div className="h-6 bg-muted rounded w-3/4"></div>
+  //             <div className="h-4 bg-muted rounded w-1/2"></div>
+  //           </CardHeader>
+  //           <CardContent>
+  //             <div className="space-y-4">
+  //               <div className="h-20 bg-muted rounded"></div>
+  //               <div className="h-10 bg-muted rounded"></div>
+  //             </div>
+  //           </CardContent>
+  //         </Card>
+  //       </div>
+  //     </div>
+  //   );
+  // }
   if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">QR Code Generator</h1>
-            <p className="text-muted-foreground">Generate a QR code for your TreeBio profile</p>
-          </div>
-        </div>
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card className="animate-pulse">
-            <CardHeader>
-              <div className="h-6 bg-muted rounded w-3/4"></div>
-              <div className="h-4 bg-muted rounded w-1/2"></div>
-            </CardHeader>
-            <CardContent>
-              <div className="h-64 bg-muted rounded"></div>
-            </CardContent>
-          </Card>
-          <Card className="animate-pulse">
-            <CardHeader>
-              <div className="h-6 bg-muted rounded w-3/4"></div>
-              <div className="h-4 bg-muted rounded w-1/2"></div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="h-20 bg-muted rounded"></div>
-                <div className="h-10 bg-muted rounded"></div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
+  return <QRShimmer />;
+}
 
   return (
     <div className="space-y-6">

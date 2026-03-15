@@ -13,6 +13,7 @@ import {
   ExternalLink,
   Globe,
   Loader2,
+  Check,
 } from "lucide-react";
 import { useOGData } from "@/hooks/useOgData";
 import { cn } from "@/lib/utils";
@@ -183,7 +184,7 @@ export const LinkFormWithPreview: React.FC<LinkFormWithPreviewProps> = ({
   );
   const [image, setImage] = React.useState(defaultValues?.image || "");
   const [isUploading, setIsUploading] = React.useState(false);
-
+  const [copied, setCopied] = React.useState(false);
   const { data: ogData, loading } = useOGData(url);
 
   // Auto-fill form fields when OG data is loaded
@@ -219,7 +220,7 @@ export const LinkFormWithPreview: React.FC<LinkFormWithPreviewProps> = ({
       // Upload to Cloudinary
       const { uploadToCloudinary } = await import("@/lib/cloudinary");
       const imageUrl = await uploadToCloudinary(file);
-      
+
       setImage(imageUrl);
       setIsUploading(false);
     } catch (error) {
@@ -263,6 +264,27 @@ export const LinkFormWithPreview: React.FC<LinkFormWithPreviewProps> = ({
                 placeholder="Image URL or upload an image"
                 className="bg-white flex-1"
               />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  navigator.clipboard.writeText(image);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+                }}
+                className="ml-2"
+                disabled={!image}
+              >
+                {copied ? (
+                  <div className="flex items-center gap-1 text-green-600">
+                    <Check size={14} />
+                    <span className="text-xs">Copied!</span>
+                  </div>
+                ) : (
+                  <span className="text-xs">Copy URL</span>
+                )}
+              </Button>
               <div className="relative">
                 <Input
                   type="file"

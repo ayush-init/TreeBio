@@ -25,7 +25,8 @@ import {
   Linkedin,
   Github,
   Twitter,
-  Globe
+  Globe,
+  Loader2,
 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { createUserProfile } from "@/modules/profile/actions";
@@ -96,21 +97,22 @@ interface Profile {
 interface SocialLink {
   id: string;
   platform:
-    | "instagram"
-    | "youtube"
-    | "email"
-    | "linkedin"
-    | "github"
-    | "leetcode"
-    | "gfg"
-    | "twitter"
-    | "website";
+  | "instagram"
+  | "youtube"
+  | "email"
+  | "linkedin"
+  | "github"
+  | "leetcode"
+  | "gfg"
+  | "twitter"
+  | "website";
   url: string;
 }
 
 interface Props {
   username: string;
   bio: string;
+  imageUrl?: string; // Add imageUrl prop
   link: {
     id: string;
     title: string;
@@ -120,9 +122,12 @@ interface Props {
     createdAt: Date;
   }[];
   socialLinks?: SocialLink[]; // Add social links prop
+  onProfileChange?: (profile: Profile) => void; // Callback for profile changes
+  onLinksChange?: (links: Link[]) => void; // Callback for links changes
+  onSocialLinksChange?: (socialLinks: SocialLink[]) => void; // Callback for social links changes
 }
 
-const LinkForm = ({ username, bio, link, socialLinks: initialSocialLinks = [] }: Props) => {
+const LinkForm = ({ username, bio, link, socialLinks: initialSocialLinks = [], imageUrl, onProfileChange, onLinksChange, onSocialLinksChange }: Props) => {
   const currentUser = useUser();
 
   const [isAddingLink, setIsAddingLink] = React.useState(false);
@@ -131,15 +136,70 @@ const LinkForm = ({ username, bio, link, socialLinks: initialSocialLinks = [] }:
   const [userSocialLinks, setUserSocialLinks] = React.useState<SocialLink[]>(initialSocialLinks);
   const [isSocialModalOpen, setIsSocialModalOpen] = React.useState(false);
   const [editingSocialLink, setEditingSocialLink] = React.useState<SocialLink | null>(null);
-  
+
+  // Add this after the existing state declarations (around line 133)
+  const [isUploadingImage, setIsUploadingImage] = React.useState(false);
+
+  // Add this handler after the existing handlers (around line 339)
+const handleProfileImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  // Validate file
+  const { validateImageFile } = await import("@/lib/cloudinary");
+  if (!validateImageFile(file)) {
+    toast.error("Please upload a valid image file (JPEG, PNG, WebP, GIF) under 5MB");
+    return;
+  }
+
+  setIsUploadingImage(true);
+  try {
+    // Upload to Cloudinary
+    const { uploadToCloudinary } = await import("@/lib/cloudinary");
+    const imageUrl = await uploadToCloudinary(file);
+
+    // Update local state
+    const updatedProfile = { ...profile, imageUrl };
+    setProfile(updatedProfile);
+    
+    // Notify parent for real-time preview update
+    if (onProfileChange) {
+      onProfileChange(updatedProfile);
+    }
+    
+    // Save to database
+    const profileData = {
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      username: profile.username,
+      bio: profile.bio,
+      imageUrl: imageUrl // Use new uploaded image URL
+    };
+
+    const result = await createUserProfile(profileData);
+    
+    if (result.success) {
+      toast.success("Profile image updated successfully!");
+    } else {
+      toast.error("Failed to save image to database");
+      // Revert local state if database save failed
+      setProfile(prev => ({ ...prev, imageUrl: profile.imageUrl }));
+    }
+    
+    setIsUploadingImage(false);
+  } catch (error) {
+    setIsUploadingImage(false);
+    toast.error("Failed to upload image");
+    console.error("Upload error:", error);
+  }
+};
+
   const [profile, setProfile] = React.useState<Profile>({
     firstName: currentUser.user?.firstName || "",
     lastName: currentUser.user?.lastName || "",
     username: username || "",
     bio: bio || "",
-    imageUrl:
-      currentUser.user?.imageUrl ||
-      `https://avatar.iran.liara.run/username?username=[${currentUser.user?.firstName}+${currentUser.user?.lastName}]`,
+    imageUrl: imageUrl || currentUser.user?.imageUrl || "/placeholder.svg", // Use database imageUrl first
   });
   const [editingLinkId, setEditingLinkId] = React.useState<string | null>(null);
 
@@ -167,11 +227,15 @@ const LinkForm = ({ username, bio, link, socialLinks: initialSocialLinks = [] }:
   // Profile submit handler
   const onProfileSubmit = async (data: ProfileFormData) => {
     try {
-      setProfile((prev) => ({ ...prev, ...data }));
+      const updatedProfile = { ...profile, ...data };
+      setProfile(updatedProfile);
 
-      const updatedProfile = await createUserProfile(data);
+      // Notify parent for real-time preview update
+      if (onProfileChange) {
+        onProfileChange(updatedProfile);
+      }
 
-      console.log("Updated Profile:", updatedProfile);
+      const result = await createUserProfile(data);
       toast.success("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -186,17 +250,21 @@ const LinkForm = ({ username, bio, link, socialLinks: initialSocialLinks = [] }:
   const onLinkSubmit = async (data: LinkFormData) => {
     try {
       const link = await createLinkByUser(data);
-      console.log("Created Link:", link);
 
       if (link?.data?.id) {
-        setLinks((prev) => [
-          ...prev,
+        const updatedLinks = [
+          ...links,
           { id: link.data.id, ...data, clickCount: 0 },
-        ]);
+        ];
+        setLinks(updatedLinks);
+        
+        // Notify parent for real-time preview update
+        if (onLinksChange) {
+          onLinksChange(updatedLinks);
+        }
       }
       toast.success("Link created successfully!");
     } catch (error) {
-      console.error("Something Went wrong", error);
       toast.error("Failed to create link.");
     } finally {
       linkForm.reset();
@@ -204,13 +272,13 @@ const LinkForm = ({ username, bio, link, socialLinks: initialSocialLinks = [] }:
     }
   };
 
- 
+  // Social link submit handler
   const onSocialLinkSubmit = async (data: SocialLinkFormData) => {
     try {
       if (editingSocialLink) {
-        
+
         const result = await editSocialLink(data, editingSocialLink.id);
-        if (result?.sucess) {
+        if (result?.success) {
           setUserSocialLinks((prev) =>
             prev.map((link) =>
               link.id === editingSocialLink.id
@@ -225,9 +293,9 @@ const LinkForm = ({ username, bio, link, socialLinks: initialSocialLinks = [] }:
       } else {
         // Add new social link
         const result = await addSocialLink(data);
-        if (result?.sucess && result?.data) {
+        if (result?.success && result?.data) {
           const newSocialLink: SocialLink = {
-            id: result.data.id,
+            id: String((result as any).data?.id || ''),
             platform: data.platform,
             url: data.url,
           };
@@ -249,12 +317,17 @@ const LinkForm = ({ username, bio, link, socialLinks: initialSocialLinks = [] }:
   const handleDeleteLink = async (linkId: string) => {
     try {
       // Delete the link
-      const deletedLink = await deleteLink(linkId);
-      console.log("Deleted Link:", deletedLink);
-      setLinks((prev) => prev.filter((link) => link.id !== linkId));
+      await deleteLink(linkId);
+      const updatedLinks = links.filter((link) => link.id !== linkId);
+      setLinks(updatedLinks);
+      
+      // Notify parent for real-time preview update
+      if (onLinksChange) {
+        onLinksChange(updatedLinks);
+      }
+      
       toast.success("Link deleted successfully!");
     } catch (error) {
-      console.error("Error deleting link:", error);
       toast.error("Failed to delete link.");
     }
   };
@@ -270,9 +343,14 @@ const LinkForm = ({ username, bio, link, socialLinks: initialSocialLinks = [] }:
     try {
       const res = await editLink(data, editingLinkId);
       if (res?.sucess) {
-        setLinks((prev) =>
-          prev.map((l) => (l.id === editingLinkId ? { ...l, ...data } : l))
-        );
+        const updatedLinks = links.map((l) => (l.id === editingLinkId ? { ...l, ...data } : l));
+        setLinks(updatedLinks);
+        
+        // Notify parent for real-time preview update
+        if (onLinksChange) {
+          onLinksChange(updatedLinks);
+        }
+        
         toast.success("Link edited successfully!");
       } else {
         toast.error(res?.error || "Failed to edit link.");
@@ -328,7 +406,7 @@ const LinkForm = ({ username, bio, link, socialLinks: initialSocialLinks = [] }:
       // Upload to Cloudinary
       const { uploadToCloudinary } = await import("@/lib/cloudinary");
       const imageUrl = await uploadToCloudinary(file);
-      
+
       // Set the image URL in the form
       linkForm.setValue("image", imageUrl);
       toast.success("Image uploaded successfully");
@@ -338,32 +416,32 @@ const LinkForm = ({ username, bio, link, socialLinks: initialSocialLinks = [] }:
     }
   };
 
-const getSocialIcon = (platform: string) => {
-  const icons: Record<string, any> = {
-    instagram: Instagram,
-    youtube: Youtube,
-    email: Mail,
-    linkedin: Linkedin,
-    github: Github,
-    twitter: Twitter,
-    website: Globe,
-    leetcode: Globe,
-    gfg: Globe,
-  };
+  const getSocialIcon = (platform: string) => {
+    const icons: Record<string, any> = {
+      instagram: Instagram,
+      youtube: Youtube,
+      email: Mail,
+      linkedin: Linkedin,
+      github: Github,
+      twitter: Twitter,
+      website: Globe,
+      leetcode: Globe,
+      gfg: Globe,
+    };
 
-  return icons[platform] || Globe;
-};
-const socialLinks = [
-  { platform: "instagram" as const, icon: Instagram },
-  { platform: "youtube" as const, icon: Youtube },
-  { platform: "email" as const, icon: Mail },
-  { platform: "linkedin" as const, icon: Linkedin },
-  { platform: "github" as const, icon: Github },
-  { platform: "twitter" as const, icon: Twitter },
-  { platform: "website" as const, icon: Globe },
-  { platform: "leetcode" as const, icon: Globe },
-  { platform: "gfg" as const, icon: Globe },
-];
+    return icons[platform] || Globe;
+  };
+  const socialLinks = [
+    { platform: "instagram" as const, icon: Instagram },
+    { platform: "youtube" as const, icon: Youtube },
+    { platform: "email" as const, icon: Mail },
+    { platform: "linkedin" as const, icon: Linkedin },
+    { platform: "github" as const, icon: Github },
+    { platform: "twitter" as const, icon: Twitter },
+    { platform: "website" as const, icon: Globe },
+    { platform: "leetcode" as const, icon: Globe },
+    { platform: "gfg" as const, icon: Globe },
+  ];
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6">
@@ -372,7 +450,7 @@ const socialLinks = [
         <CardContent className="p-6">
           <div className="flex items-center gap-4">
             <div className="relative group">
-              <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
+              <Avatar className="h-20 w-20 border-4 border-white shadow-lg cursor-pointer">
                 <AvatarImage
                   src={profile.imageUrl || "/placeholder.svg"}
                   alt={profile.username}
@@ -381,13 +459,33 @@ const socialLinks = [
                   {profile.username.slice(0, 2).toUpperCase() || "UN"}
                 </AvatarFallback>
               </Avatar>
-              <Button
-                size="sm"
-                variant="secondary"
-                className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <Camera size={14} />
-              </Button>
+              <div className="absolute -bottom-2 -right-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleProfileImageUpload}
+                  className="hidden"
+                  id="profile-image-upload"
+                  disabled={isUploadingImage}
+                />
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="h-8 w-8 rounded-full p-0"
+                  asChild
+                  disabled={isUploadingImage}
+                >
+                  <label htmlFor="profile-image-upload" className="cursor-pointer">
+                    {isUploadingImage ? (
+                      <div className="animate-spin">
+                        <Loader2 size={14} />
+                      </div>
+                    ) : (
+                      <Camera size={14} />
+                    )}
+                  </label>
+                </Button>
+              </div>
             </div>
 
             <div className="flex-1 space-y-2">
@@ -502,7 +600,7 @@ const socialLinks = [
                 </div>
               );
             })}
-            
+
             {/* Add new social link button */}
             <Button
               variant="outline"
@@ -538,10 +636,10 @@ const socialLinks = [
             defaultValues={
               editingLinkId
                 ? links.find((l) => l.id === editingLinkId) || {
-                    title: "",
-                    url: "",
-                    description: "",
-                  }
+                  title: "",
+                  url: "",
+                  description: "",
+                }
                 : { title: "", url: "", description: "" }
             }
           />
