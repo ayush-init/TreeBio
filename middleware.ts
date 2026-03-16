@@ -2,6 +2,7 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
 // Add your username routes to public routes
 const isPublicRoute = createRouteMatcher([
+  '/', // Add home page to public routes
   '/sign-in(.*)', 
   '/sign-up(.*)',
   '/([^/]+)' // This matches any single segment path like /username
