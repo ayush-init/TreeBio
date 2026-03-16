@@ -1,8 +1,8 @@
-# TreeBio Project Documentation
+#  Project Documentation
 
 ## Project Overview
 
-**TreeBio** is a comprehensive Next.js-based link-in-bio application built as a modern alternative to Linktree. It enables users to create personalized landing pages with multiple links, social media profiles, QR code generation, and provides detailed analytics tracking with customizable appearance settings.
+ This  is a comprehensive Next.js-based link-in-bio application built as a modern alternative to Linktree. It enables users to create personalized landing pages with multiple links, social media profiles, QR code generation, and provides detailed analytics tracking with customizable appearance settings.
 
 ### Tech Stack
 - **Framework**: Next.js 15.4.4 with App Router and Turbopack
