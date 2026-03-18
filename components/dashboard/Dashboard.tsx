@@ -7,28 +7,14 @@ import { getCurrentUsername } from "@/modules/profile/actions";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { 
-  Plus, 
-  BarChart3, 
-  Settings, 
   Copy, 
   Check, 
-  TreePine, 
-  ExternalLink,
-  Eye,
-  Link2,
-  MousePointer,
-  TrendingUp,
-  Clock,
-  Globe,
-  User,
-  Moon,
-  Sun,
   ArrowRight
 } from "lucide-react";
 
 export default function Dashboard() {
-  const [user, setUser] = useState<any>(null);
-  const [profile, setProfile] = useState<any>(null);
+  const [user, setUser] = useState<{[key: string]: any} | null>(null);
+  const [profile, setProfile] = useState<{[key: string]: any} | null>(null);
   const [loading, setLoading] = useState(true);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [copied, setCopied] = useState(false);
@@ -167,13 +153,13 @@ export default function Dashboard() {
 
             {/* Dashboard Link */}
             <div className="flex items-center gap-6">
-              <a 
+              <Link 
                 href="/admin/my-tree"
                 className="group flex items-center gap-2 text-gray-400 hover:text-white transition-colors duration-200 font-semibold text-sm uppercase tracking-widest"
               >
                 <span>LinkNode Dashboard</span>
                 <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
-              </a>
+              </Link>
             </div>
           </div>
 

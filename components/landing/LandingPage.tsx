@@ -20,7 +20,7 @@ export default function LandingPage() {
               Share Everything <br /> <span className=" text-[#FFA116]">With One Link</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
-              The only link you'll ever need to power your online presence. Connect your audience to all your content with a beautiful, high-converting bio page.
+              The only link you&apos;ll ever need to power your online presence. Connect your audience to all your content with a beautiful, high-converting bio page.
             </p>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex -space-x-2">
@@ -219,7 +219,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-black mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-muted-foreground">Choose plan that's right for your creative journey.</p>
+            <p className="text-muted-foreground">Choose plan that&apos;s right for your creative journey.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="p-8 rounded-3xl bg-card border border-border flex flex-col gap-6 relative overflow-hidden group">

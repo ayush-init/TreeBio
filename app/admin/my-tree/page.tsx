@@ -8,11 +8,44 @@ import ShareMenu from "@/modules/links/components/share-menu";
 import { Brush } from "lucide-react";
 import { MyTreeShimmer } from "@/modules/links/components/my-tree-shimmer";
 
+interface ProfileData {
+  firstName: string;
+  lastName: string;
+  username: string;
+  bio?: string;
+  imageUrl?: string;
+  socialLinks?: Array<{ id: string; platform: string; url: string }>;
+}
+
+interface LinkData {
+  id: string;
+  title: string;
+  description?: string;
+  url: string;
+  image?: string | null;
+  clickCount: number;
+  createdAt: Date;
+  platform?: string;
+  user: {
+    firstName?: string;
+    lastName?: string;
+    username?: string;
+    bio?: string;
+    imageUrl?: string;
+  };
+}
+
+interface CurrentUser {
+  firstName?: string;
+  lastName?: string;
+  imageUrl?: string;
+}
+
 const Page = () => {
-  const [profile, setProfile] = React.useState<any>(null);
-  const [links, setLinks] = React.useState<any[]>([]);
+  const [profile, setProfile] = React.useState<ProfileData | null>(null);
+  const [links, setLinks] = React.useState<LinkData[]>([]);
   const [loading, setLoading] = React.useState(true);
-  const [currentUser, setCurrentUser] = React.useState<any>(null);
+  const [currentUser, setCurrentUser] = React.useState<CurrentUser | null>(null);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -45,11 +78,11 @@ const Page = () => {
     fetchData();
   }, []);
 
-  const handleProfileChange = (updatedProfile: any) => {
-    setProfile((prev: any) => ({ ...prev, ...updatedProfile }));
+  const handleProfileChange = (updatedProfile: Partial<ProfileData>) => {
+    setProfile((prev: ProfileData | null) => ({ ...prev, ...updatedProfile }));
   };
 
-  const handleLinksChange = (updatedLinks: any[]) => {
+  const handleLinksChange = (updatedLinks: LinkData[]) => {
     setLinks(updatedLinks);
   };
 
