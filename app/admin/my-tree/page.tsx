@@ -58,14 +58,14 @@ const Page = () => {
   }
 
   return (
-    <section className="flex flex-col gap-6 px-4 py-6 h-screen overflow-hidden">
+    <section className="flex flex-col gap-6 px-6 py-6 h-[calc(100vh-4rem)] overflow-hidden">
       {/* Page header */}
       <div className="flex flex-row items-center justify-between w-full flex-shrink-0">
         <div className="flex flex-row justify-center items-center gap-3">
           <Button
             variant="outline"
             size="default"
-            className="gap-2 bg-transparent"
+            className="gap-2 bg-[#1a1a1a] border-[#2a2a2a] text-gray-300 hover:bg-[#2a2a2a] hover:text-white rounded-xl transition-all duration-300"
           >
             <Brush size={16} />
             Design
@@ -77,8 +77,8 @@ const Page = () => {
       {/* Main Content - Form and Preview */}
       <div className="flex flex-col lg:flex-row gap-8 flex-1 min-h-0">
         {/* Left Editor - Scrollable Area */}
-        <div className="h-full preview-scrollbar p-10  ">
-          <div className="border-r pr-0 lg:pr-8 pb-8">
+        <div className="flex-1 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+          <div className="pr-0 lg:pr-8 pb-8">
             <LinkForm
               username={profile?.username || ""}
               bio={profile?.bio || ""}
@@ -92,8 +92,8 @@ const Page = () => {
         </div>
 
         {/* Right Preview - Fixed Panel */}
-        <div className="order-1  lg:order-2 w-full lg:w-96 flex-shrink-0 overflow-hidden">
-          <div className="flex-1 p-5  justify-center items-center order-2 lg:order-1 min-w-0 editor-scrollbar">
+        <div className="order-1 lg:order-2 w-full lg:w-96 flex-shrink-0 overflow-hidden">
+          <div className="flex-1 flex justify-center items-center min-w-0">
             <PreviewFrame
               currentUser={currentUser}
               links={links.map((link: { id: string; title: string; description: string | null; url: string; clickCount: number; createdAt: Date; image?: string | null }) => ({

@@ -444,186 +444,207 @@ const handleProfileImageUpload = async (event: React.ChangeEvent<HTMLInputElemen
   ];
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-6">
+    <div className="w-full max-w-2xl mx-auto space-y-8">
       {/* Profile Section */}
-      <Card className="border-2 border-dashed border-gray-200 hover:border-green-400 transition-colors">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-4">
-            <div className="relative group">
-              <Avatar className="h-20 w-20 border-4 border-white shadow-lg cursor-pointer">
-                <AvatarImage
-                  src={profile.imageUrl || "/placeholder.svg"}
-                  alt={profile.username}
-                />
-                <AvatarFallback className="text-lg font-semibold bg-gray-100 text-gray-600">
-                  {profile.username.slice(0, 2).toUpperCase() || "UN"}
-                </AvatarFallback>
-              </Avatar>
-              <div className="absolute -bottom-2 -right-2">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleProfileImageUpload}
-                  className="hidden"
-                  id="profile-image-upload"
-                  disabled={isUploadingImage}
-                />
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  className="h-8 w-8 rounded-full p-0"
-                  asChild
-                  disabled={isUploadingImage}
-                >
-                  <label htmlFor="profile-image-upload" className="cursor-pointer">
-                    {isUploadingImage ? (
-                      <div className="animate-spin">
-                        <Loader2 size={14} />
+      <div className="space-y-4">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Profile Info</h2>
+        <Card className="border-2 border-dashed border-gray-200 hover:border-green-400 transition-colors">
+          <CardContent className="p-8">
+            <div className="flex items-start gap-6">
+              <div className="relative group flex-shrink-0">
+                <Avatar className="h-24 w-24 border-4 border-white shadow-lg cursor-pointer">
+                  <AvatarImage
+                    src={profile.imageUrl || "/placeholder.svg"}
+                    alt={profile.username}
+                  />
+                  <AvatarFallback className="text-xl font-semibold bg-gray-100 text-[#FFA116]">
+                    {profile.username.slice(0, 2).toUpperCase() || "UN"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="absolute -bottom-2 -right-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfileImageUpload}
+                    className="hidden"
+                    id="profile-image-upload"
+                    disabled={isUploadingImage}
+                  />
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="h-8 w-8 rounded-full p-0"
+                    asChild
+                    disabled={isUploadingImage}
+                  >
+                    <label htmlFor="profile-image-upload" className="cursor-pointer">
+                      {isUploadingImage ? (
+                        <div className="animate-spin">
+                          <Loader2 size={14} />
+                        </div>
+                      ) : (
+                        <Camera size={14} />
+                      )}
+                    </label>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex-1 space-y-4">
+                {editingProfile ? (
+                  <form
+                    onSubmit={profileForm.handleSubmit(onProfileSubmit)}
+                    className="space-y-4"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex gap-3">
+                        <Input
+                          {...profileForm.register("firstName")}
+                          placeholder="First Name"
+                          className="flex-1"
+                        />
+                        <Input
+                          {...profileForm.register("lastName")}
+                          placeholder="Last Name"
+                          className="flex-1"
+                        />
                       </div>
-                    ) : (
-                      <Camera size={14} />
-                    )}
-                  </label>
-                </Button>
+                      <div>
+                        <Input
+                          {...profileForm.register("username")}
+                          placeholder="Username"
+                          className="font-semibold cursor-not-allowed"
+                          readOnly
+                          disabled
+                        />
+                        {profileForm.formState.errors.username && (
+                          <p className="text-sm text-red-500 mt-2">
+                            {profileForm.formState.errors.username.message}
+                          </p>
+                        )}
+                      </div>
+                      <div>
+                        <Textarea
+                          {...profileForm.register("bio")}
+                          placeholder="Add bio..."
+                          className="resize-none"
+                          rows={3}
+                        />
+                        {profileForm.formState.errors.bio && (
+                          <p className="text-sm text-red-500 mt-2">
+                            {profileForm.formState.errors.bio.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <Button
+                        size="sm"
+                        type="submit"
+                        disabled={profileForm.formState.isSubmitting}
+                        className="px-6 py-2"
+                      >
+                        Save
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        type="button"
+                        onClick={() => setEditingProfile(false)}
+                        className="px-6 py-2"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-bold text-xl text-gray-900 dark:text-white">
+                          {profile.username || "Add username..."}
+                        </h3>
+                        <p className="text-sm text-muted-foreground dark:text-gray-300 mt-1">
+                          {profile.bio || "Add bio..."}
+                        </p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 w-8 p-0 hover:bg-gray-100"
+                        onClick={() => setEditingProfile(true)}
+                      >
+                        <Edit3 size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
-            <div className="flex-1 space-y-2">
-              {editingProfile ? (
-                <form
-                  onSubmit={profileForm.handleSubmit(onProfileSubmit)}
-                  className="space-y-2"
+            {/* Social Links */}
+            <div className="mt-6 pt-6 border-t border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Social Links</h4>
+              </div>
+              <div className="flex gap-3 flex-wrap">
+                {/* Display existing social links */}
+                {userSocialLinks.map((socialLink) => {
+                  const Icon = getSocialIcon(socialLink.platform);
+                  return (
+                    <div key={socialLink.id} className="relative group">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-10 w-10 p-0 bg-transparent hover:bg-gray-50 border-gray-200"
+                        onClick={() => window.open(socialLink.url, '_blank')}
+                      >
+                        <Icon size={18} />
+                      </Button>
+                      {/* Delete button on hover */}
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                        onClick={() => handleDeleteSocialLink(socialLink.id)}
+                      >
+                        <X size={12} />
+                      </Button>
+                      {/* Edit on click (optional - you can add this functionality) */}
+                    </div>
+                  );
+                })}
+
+                {/* Add new social link button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-10 w-10 p-0 border-dashed bg-transparent hover:bg-gray-50 border-gray-300"
+                  onClick={handleAddSocialLink}
                 >
-                  <div className="flex gap-2">
-                    <Input
-                      {...profileForm.register("firstName")}
-                      placeholder="First Name"
-                    />
-                    <Input
-                      {...profileForm.register("lastName")}
-                      placeholder="Last Name"
-                    />
-                  </div>
-                  <div>
-                    <Input
-                      {...profileForm.register("username")}
-                      placeholder="Username"
-                      className="font-semibold cursor-not-allowed"
-                      readOnly
-                      disabled
-                    />
-                    {profileForm.formState.errors.username && (
-                      <p className="text-sm text-red-500 mt-1">
-                        {profileForm.formState.errors.username.message}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Textarea
-                      {...profileForm.register("bio")}
-                      placeholder="Add bio..."
-                      className="resize-none"
-                      rows={2}
-                    />
-                    {profileForm.formState.errors.bio && (
-                      <p className="text-sm text-red-500 mt-1">
-                        {profileForm.formState.errors.bio.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      type="submit"
-                      disabled={profileForm.formState.isSubmitting}
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      type="button"
-                      onClick={() => setEditingProfile(false)}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </form>
-              ) : (
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-lg">
-                      {profile.username || "Add username..."}
-                    </h3>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-6 w-6 p-0"
-                      onClick={() => setEditingProfile(true)}
-                    >
-                      <Edit3 size={12} />
-                    </Button>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    {profile.bio || "Add bio..."}
-                  </p>
-                </div>
-              )}
+                  <Plus size={18} />
+                </Button>
+              </div>
             </div>
-          </div>
-
-          {/* Social Links */}
-          <div className="mt-4 flex gap-2 flex-wrap">
-            {/* Display existing social links */}
-            {userSocialLinks.map((socialLink) => {
-              const Icon = getSocialIcon(socialLink.platform);
-              return (
-                <div key={socialLink.id} className="relative group">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-9 w-9 p-0 bg-transparent"
-                    onClick={() => window.open(socialLink.url, '_blank')}
-                  >
-                    <Icon size={16} />
-                  </Button>
-                  {/* Delete button on hover */}
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={() => handleDeleteSocialLink(socialLink.id)}
-                  >
-                    <X size={10} />
-                  </Button>
-                  {/* Edit on click (optional - you can add this functionality) */}
-                </div>
-              );
-            })}
-
-            {/* Add new social link button */}
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-9 w-9 p-0 border-dashed bg-transparent"
-              onClick={handleAddSocialLink}
-            >
-              <Plus size={16} />
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Links Section */}
-      <div className="space-y-3">
-        {links.map((link, index) => (
-          <LinkCard
-            key={link.id}
-            link={link}
-            onDelete={handleDeleteLink}
-            onEdit={handleEditLink}
-          />
-        ))}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Link Content</h2>
+        </div>
+        <div className="space-y-4">
+          {links.map((link, index) => (
+            <LinkCard
+              key={link.id}
+              link={link}
+              onDelete={handleDeleteLink}
+              onEdit={handleEditLink}
+            />
+          ))}
+        </div>
 
         {/* Add New Link */}
         {isAddingLink ? (
@@ -636,43 +657,43 @@ const handleProfileImageUpload = async (event: React.ChangeEvent<HTMLInputElemen
             defaultValues={
               editingLinkId
                 ? links.find((l) => l.id === editingLinkId) || {
-                  title: "",
-                  url: "",
-                  description: "",
-                }
+                    title: "",
+                    url: "",
+                    description: "",
+                  }
                 : { title: "", url: "", description: "" }
             }
           />
         ) : (
           <Button
             onClick={() => setIsAddingLink(true)}
-            className="w-full h-12 border-2 border-dashed border-gray-300 bg-white hover:bg-gray-50 dark:text-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
+            className="w-full h-14 border-2 border-dashed border-gray-300 dark:text-gray-200 text-gray-700 font-medium rounded-lg transition-colors flex items-center justify-center gap-3"
             variant="outline"
           >
-            <Plus size={20} className="mr-2" />
-            Add Link
+            <Plus size={24} />
+            <span className="text-base">Add Link</span>
           </Button>
         )}
       </div>
 
       {/* Bottom Actions */}
-      <div className="flex items-center justify-between pt-4 border-t">
+      <div className="flex items-center justify-between pt-6 pb-2 border-t border-gray-200">
         <Button
           variant="outline"
           onClick={() => toast.success("Feature coming soon!")}
-          className="flex items-center gap-2 bg-transparent cursor-pointer"
+          className="flex items-center gap-3 bg-transparent cursor-pointer px-4 py-3 h-auto"
         >
-          <FolderPlus size={16} />
-          Add Collection
+          <FolderPlus size={18} />
+          <span>Add Collection</span>
         </Button>
 
         <Button
           variant="outline"
-          className="flex items-center gap-2 bg-transparent cursor-pointer"
+          className="flex items-center gap-3 bg-transparent cursor-pointer px-4 py-3 h-auto"
           onClick={() => toast.success("Feature coming soon!")}
         >
-          <Archive size={16} />
-          View Archive
+          <Archive size={18} />
+          <span>View Archive</span>
         </Button>
       </div>
 

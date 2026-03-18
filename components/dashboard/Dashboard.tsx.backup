@@ -300,44 +300,139 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      <style jsx>{`
-        @keyframes ping {
-          75%, 100% {
-            transform: scale(2);
-            opacity: 0;
-          }
+          {/* Orbital Cards - Match Image Layout */}
+          
+          {/* VIDEO Card - Top Right */}
+          <div className="absolute animate-orbit" style={{ 
+            animationDuration: '25s',
+            animationDelay: '0s',
+            transform: `translate3d(${mousePos.x * 0.4}px, ${mousePos.y * 0.4}px, 0)`
+          }}>
+            <div className="glass-card bg-white/10 p-6 rounded-2xl w-48 flex flex-col gap-4" style={{
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              transform: 'translateX(200px) translateY(-150px) rotate(0deg)'
+            }}>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                  <div className="w-6 h-4 bg-red-500 rounded-sm"></div>
+                </div>
+                <span className="text-sm font-bold uppercase tracking-wider text-white">VIDEO</span>
+              </div>
+              <div className="h-16 bg-white/5 rounded-lg"></div>
+            </div>
+          </div>
+
+          {/* WORK Card - Middle Left */}
+          <div className="absolute animate-orbit" style={{ 
+            animationDuration: '30s',
+            animationDelay: '-8s',
+            transform: `translate3d(${mousePos.x * 0.5}px, ${mousePos.y * 0.5}px, 0)`
+          }}>
+            <div className="glass-card bg-white/10 p-6 rounded-2xl w-48 flex flex-col gap-4" style={{
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              transform: 'translateX(-200px) translateY(0px) rotate(0deg)'
+            }}>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                  <div className="w-5 h-3 bg-blue-400 rounded-sm"></div>
+                </div>
+                <span className="text-sm font-bold uppercase tracking-wider text-white">WORK</span>
+              </div>
+              <div className="h-16 bg-white/5 rounded-lg"></div>
+            </div>
+          </div>
+
+          {/* UPDATES Card - Bottom Left */}
+          <div className="absolute animate-orbit" style={{ 
+            animationDuration: '35s',
+            animationDelay: '-16s',
+            transform: `translate3d(${mousePos.x * 0.6}px, ${mousePos.y * 0.6}px, 0)`
+          }}>
+            <div className="glass-card bg-white/10 p-6 rounded-2xl w-48 flex flex-col gap-4" style={{
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              transform: 'translateX(-200px) translateY(150px) rotate(0deg)'
+            }}>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gray-500/20 rounded-lg flex items-center justify-center">
+                  <div className="w-4 h-4 bg-gray-400 rounded"></div>
+                </div>
+                <span className="text-sm font-bold uppercase tracking-wider text-white">UPDATES</span>
+              </div>
+              <div className="h-16 bg-white/5 rounded-lg"></div>
+            </div>
+          </div>
+
+          {/* SUBSCRIBERS Card - Bottom */}
+          <div className="absolute animate-orbit" style={{ 
+            animationDuration: '40s',
+            animationDelay: '-24s',
+            transform: `translate3d(${mousePos.x * 0.7}px, ${mousePos.y * 0.7}px, 0)`
+          }}>
+            <div className="glass-card bg-white/10 p-6 rounded-2xl w-56 flex flex-col gap-4" style={{
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              transform: 'translateX(0px) translateY(200px) rotate(0deg)'
+            }}>
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm font-bold uppercase tracking-wider text-white">SUBSCRIBERS</span>
+              </div>
+              <div className="flex gap-2">
+                <input 
+                  type="email" 
+                  placeholder="Enter your email" 
+                  className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 text-sm focus:outline-none focus:border-[#FFA116] focus:ring-1 focus:ring-[#FFA116]/50"
+                />
+                <Button className="bg-[#FFA116] hover:bg-orange-500 text-black font-bold px-4 py-2 rounded-lg text-sm transition-colors">
+                  SUBSCRIBE
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+ 
+     
+    <style jsx>{`
+      @keyframes ping {
+        75%, 100% {
+          transform: scale(2);
+          opacity: 0;
         }
-        
-        @keyframes orbit {
-          from {
-            transform: rotate(0deg) translateX(180px);
-          }
-          to {
-            transform: rotate(360deg) translateX(180px);
-          }
+      }
+      
+      @keyframes orbit {
+        from {
+          transform: rotate(0deg) translateX(180px);
         }
-        
-        .animate-orbit {
-          animation: orbit linear infinite;
-          transform-origin: center;
+        to {
+          transform: rotate(360deg) translateX(180px);
         }
-        
-        .glass-card {
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-          transform-style: preserve-3d;
-        }
-        .glass-card:hover {
-          border-color: rgba(255, 161, 22, 0.4);
-          transform: translateY(-5px) scale(1.02);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(255,161,22,0.1);
-        }
-      `}</style>
-    </div>
-  );
-}
+      }
+      
+      .animate-orbit {
+        animation: orbit linear infinite;
+        transform-origin: center;
+      }
+      
+      .glass-card {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        transform-style: preserve-3d;
+      }
+      .glass-card:hover {
+        border-color: rgba(255, 161, 22, 0.4);
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(255,161,22,0.1);
+      }
+    `}</style>
+  </div>
+);

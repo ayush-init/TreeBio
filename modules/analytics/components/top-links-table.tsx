@@ -12,7 +12,7 @@ export async function TopLinksTable({ userId }: TopLinksTableProps) {
 
   if (!topLinks || topLinks.length === 0) {
     return (
-      <Card className="bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+      <Card className="bg-card dark:bg-card border-zinc-200 dark:border-zinc-800">
         <CardHeader>
           <CardTitle className="text-zinc-900 dark:text-zinc-100">Top Performing Links</CardTitle>
           <CardDescription className="text-zinc-600 dark:text-zinc-400">Your most clicked links</CardDescription>
@@ -49,7 +49,7 @@ export async function TopLinksTable({ userId }: TopLinksTableProps) {
   }
 
   return (
-    <Card className="bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+    <Card className="bg-card dark:bg-card border-zinc-200 dark:border-zinc-800">
       <CardHeader>
         <CardTitle className="text-zinc-900 dark:text-zinc-100">Top Performing Links</CardTitle>
         <CardDescription className="text-zinc-600 dark:text-zinc-400">Your most clicked links</CardDescription>
