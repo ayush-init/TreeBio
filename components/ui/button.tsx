@@ -10,16 +10,16 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+          "bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg shadow-amber-500/25 hover:from-amber-600 hover:to-orange-700 hover:shadow-xl hover:shadow-amber-500/30 transition-all duration-300 transform hover:scale-[1.02]",
         destructive:
           "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "border border-amber-700/50 bg-amber-950/20 shadow-xs hover:bg-amber-900/30 hover:border-amber-600/50 hover:text-amber-200 transition-all duration-300",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+          "bg-gradient-to-r from-amber-900/40 to-amber-800/40 text-amber-100 border border-amber-700/30 shadow-xs hover:from-amber-800/50 hover:to-amber-700/50 hover:border-amber-600/40 transition-all duration-300",
         ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
+          "hover:bg-amber-900/20 hover:text-amber-200 transition-all duration-200",
+        link: "text-amber-400 underline-offset-4 hover:text-amber-300 hover:underline transition-colors duration-200",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

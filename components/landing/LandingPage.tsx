@@ -17,16 +17,16 @@ export default function LandingPage() {
               <span className="text-xs font-bold text-primary uppercase tracking-widest">New: Advanced Analytics 2.0</span>
             </div>
             <h1 className="text-5xl lg:text-7xl font-black leading-[1.1] tracking-tight">
-              Share Everything <br /> <span className="text-primary">With One Link</span>
+              Share Everything <br /> <span className=" text-[#FFA116]">With One Link</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
               The only link you'll ever need to power your online presence. Connect your audience to all your content with a beautiful, high-converting bio page.
             </p>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex -space-x-2">
-                <div className="w-8 h-8 rounded-full border-2 border-background bg-muted overflow-hidden"></div>
-                <div className="w-8 h-8 rounded-full border-2 border-background bg-muted overflow-hidden"></div>
-                <div className="w-8 h-8 rounded-full border-2 border-background bg-muted overflow-hidden"></div>
+                <div className="w-8 h-8 rounded-full border-2 border-background bg-[#FFA116] overflow-hidden"></div>
+                <div className="w-8 h-8 rounded-full border-2 border-background bg-[#41B313] overflow-hidden"></div>
+                <div className="w-8 h-8 rounded-full border-2 border-background bg-blue-500 overflow-hidden"></div>
               </div>
               <span>Joined by 50,000+ creators this month</span>
             </div>
@@ -37,8 +37,8 @@ export default function LandingPage() {
               <div className="relative p-6 flex flex-col items-center gap-6">
                 <div className="w-20 h-20 rounded-full bg-muted border-2 border-primary/30 mt-8 overflow-hidden"></div>
                 <div className="text-center">
-                  <h3 className="font-bold text-lg">Alex Rivera</h3>
-                  <p className="text-xs text-muted-foreground">Digital Creator & Artist</p>
+                  <h3 className="font-bold text-lg">Ayush Chaurasiya</h3>
+                  <p className="text-xs text-muted-foreground">Full Stack Developer</p>
                 </div>
                 <div className="w-full flex flex-col gap-3">
                   <div className="w-full py-3 bg-card/5 border border-border rounded-xl text-center text-sm font-medium hover:bg-card/10 transition-colors cursor-pointer">Latest YouTube Video</div>
@@ -174,18 +174,26 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <div className="h-48 w-full flex items-end gap-2 px-2">
-                  <div className="w-full bg-primary/20 h-[40%] rounded-t-sm relative group hover:bg-primary/40 transition-colors"></div>
-                  <div className="w-full bg-primary/20 h-[65%] rounded-t-sm relative"></div>
-                  <div className="w-full bg-primary/20 h-[45%] rounded-t-sm relative"></div>
-                  <div className="w-full bg-primary/20 h-[80%] rounded-t-sm relative"></div>
-                  <div className="w-full bg-primary/40 h-[95%] rounded-t-sm relative border-t-2 border-primary"></div>
-                  <div className="w-full bg-primary/20 h-[60%] rounded-t-sm relative"></div>
-                  <div className="w-full bg-primary/20 h-[75%] rounded-t-sm relative"></div>
+
+                  <div className="w-full bg-[#2563EB]/80 h-[40%] rounded-t-sm hover:bg-[#2563EB] transition"></div>
+
+                  <div className="w-full bg-green-400/80 h-[65%] rounded-t-sm hover:bg-green-400 transition"></div>
+
+                  <div className="w-full bg-[#FFA116]/80 h-[45%] rounded-t-sm hover:bg-[#FFA116] transition"></div>
+
+                  <div className="w-full bg-[#2563EB]/80 h-[80%] rounded-t-sm hover:bg-[#2563EB] transition"></div>
+
+                  <div className="w-full bg-[#FFA116]/80 h-[95%] rounded-t-sm border-t-2 hover:bg-[#FFA116]   border-orange-300"></div>
+
+                  <div className="w-full bg-green-400/80  h-[60%] rounded-t-sm hover:bg-green-400  transition"></div>
+
+                  <div className="w-full bg-[#2563EB]/80 h-[75%] rounded-t-sm hover:bg-[#2563EB] transition"></div>
+
                 </div>
               </div>
             </div>
             <div className="order-1 lg:order-2 flex flex-col gap-6">
-              <h2 className="text-3xl md:text-5xl font-black leading-tight">Data That Drives <br /> <span className="text-primary">Decisions</span></h2>
+              <h2 className="text-3xl md:text-5xl font-black leading-tight">Data That Drives <br /> <span className="text-[#FFA116]">Decisions</span></h2>
               <p className="text-muted-foreground leading-relaxed">Stop guessing what your audience likes. Get detailed insights into where your traffic comes from and which links are performing best.</p>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
@@ -240,37 +248,63 @@ export default function LandingPage() {
                 </Button>
               </Link>
             </div>
-            <div className="p-8 rounded-3xl bg-primary/5 border-2 border-primary flex flex-col gap-6 relative overflow-hidden scale-105 shadow-2xl shadow-primary/10">
-              <div className="absolute top-4 right-4 bg-primary text-primary-foreground text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest">Most Popular</div>
-              <div>
-                <h3 className="text-xl font-bold mb-2">Pro</h3>
-                <p className="text-3xl font-black text-primary">$9<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
+            <div className="p-8 rounded-3xl 
+  bg-gradient-to-b from-[#2A1B0F] via-[#1A120B] to-[#0B0B0B]
+  border border-orange-500/30 
+  flex flex-col gap-6 relative overflow-hidden 
+  scale-105 
+  shadow-[0_0_40px_rgba(245,158,11,0.15)]">
+
+              {/* Badge */}
+              <div className="absolute top-4 right-4 
+    bg-orange-500 text-black 
+    text-[10px] font-black px-3 py-1 rounded-full 
+    uppercase tracking-widest shadow-md">
+                Most Popular
               </div>
-              <p className="text-sm text-foreground">Perfect for growing creators looking to level up their brand.</p>
-              <div className="space-y-4 text-sm text-foreground flex-1">
+
+              {/* Title */}
+              <div>
+                <h3 className="text-xl font-bold mb-2 text-white">Pro</h3>
+                <p className="text-3xl font-black text-orange-400">
+                  $9
+                  <span className="text-sm font-normal text-zinc-400">/mo</span>
+                </p>
+              </div>
+
+              {/* Description */}
+              <p className="text-sm text-zinc-400">
+                Perfect for growing creators looking to level up their brand.
+              </p>
+
+              {/* Features */}
+              <div className="space-y-4 text-sm text-zinc-300 flex-1">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-primary" />
+                  <CheckCircle className="w-4 h-4 text-orange-400" />
                   Everything in Free
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-primary" />
+                  <CheckCircle className="w-4 h-4 text-orange-400" />
                   Remove TreeBio Branding
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-primary" />
+                  <CheckCircle className="w-4 h-4 text-orange-400" />
                   Advanced Analytics
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-primary" />
+                  <CheckCircle className="w-4 h-4 text-orange-400" />
                   Priority Support
                 </div>
               </div>
+
+              {/* Button */}
               <Link href="/sign-up">
-                <Button className="mt-auto w-full py-3 rounded-xl bg-primary text-primary-foreground font-black shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">
+                <Button className="mt-auto w-full py-3 rounded-xl     bg-orange-500 text-black font-black   shadow-lg shadow-orange-500/30     hover:scale-[1.02] hover:bg-orange-400 transition">
                   Get Pro Now
                 </Button>
               </Link>
             </div>
+
             <div className="p-8 rounded-3xl bg-card border border-border flex flex-col gap-6 relative overflow-hidden group">
               <div>
                 <h3 className="text-xl font-bold mb-2">Creator</h3>
@@ -305,26 +339,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 px-6">
-        <div className="max-w-5xl mx-auto rounded-[3rem] p-12 md:p-20 relative overflow-hidden bg-gradient-to-br from-primary to-orange-700">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.2),transparent)]"></div>
-          <div className="relative z-10 flex flex-col items-center text-center gap-8">
-            <h2 className="text-4xl md:text-6xl font-black text-primary-foreground leading-tight">Build Your TreeBio <br /> Today</h2>
-            <p className="text-primary-foreground/80 text-lg max-w-xl font-medium">Join 2 million+ creators who use TreeBio to share their world and grow their income.</p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/sign-up">
-                <Button className="px-10 py-4 bg-background text-foreground rounded-2xl font-black text-lg shadow-2xl hover:scale-105 transition-transform">
-                  Get Started for Free
-                </Button>
-              </Link>
-              <Button className="px-10 py-4 bg-white/20 backdrop-blur-md text-primary-foreground rounded-2xl font-black text-lg border border-white/30 hover:bg-white/30 transition-colors">
-                View Examples
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+ 
 
       {/* Footer */}
       <footer className="py-20 border-t border-border">

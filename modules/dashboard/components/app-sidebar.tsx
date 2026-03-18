@@ -4,6 +4,8 @@ import {
   BarChart3,
   Settings,
   QrCode,
+  User,
+  Crown,
 } from "lucide-react";
 import {
   Sidebar,
@@ -55,20 +57,20 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar>
-      <SidebarHeader>
-        <Link href={"/"} className="flex gap-2 items-center justify-start p-4 ">
+    <Sidebar className="border-r border-sidebar-border bg-sidebar">
+      <SidebarHeader className="bg-transparent">
+        <Link href={"/"} className="flex gap-2 items-center justify-start p-4 hover:bg-sidebar-accent rounded-xl transition-all duration-300">
           <Image src={"/logo.svg"} alt="TreeBio Logo" width={32} height={32} />
-          <h1 className="text-lg font-bold text-zinc-700 dark:text-zinc-100">
-            TreeBio Admin
+          <h1 className="text-lg font-bold text-sidebar-foreground">
+            LinkNode Admin
           </h1>
         </Link>
-        <SidebarSeparator />
+        <SidebarSeparator className="bg-sidebar-border" />
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="bg-transparent">
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sidebar-accent-foreground font-semibold">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainNavItems.map((item) => (
@@ -77,10 +79,11 @@ export function AppSidebar() {
                     asChild
                     size={"lg"}
                     isActive={pathname === item.url}
+                    className="sidebar-menu-item"
                   >
                     <Link href={item.url}>
                       <>
-                        <item.icon className="size-6 " />
+                        <item.icon className="size-6 sidebar-icon" />
                         <span className="font-semibold text-base">
                           {item.title}
                         </span>
@@ -93,10 +96,10 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator />
+        <SidebarSeparator className="bg-sidebar-border" />
 
         <SidebarGroup>
-          <SidebarGroupLabel>Tools</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sidebar-accent-foreground font-semibold">Tools</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {toolsItems.map((item) => (
@@ -105,9 +108,10 @@ export function AppSidebar() {
                     asChild
                     size={"lg"}
                     isActive={pathname === item.url}
+                    className="sidebar-menu-item"
                   >
                     <Link href={item.url}>
-                      <item.icon className="size-6" />
+                      <item.icon className="size-6 sidebar-icon" />
                       <span className="font-semibold text-base">
                         {item.title}
                       </span>
@@ -119,6 +123,23 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter className="bg-transparent border-t border-sidebar-border">
+        <div className="flex items-center gap-3 p-4 sidebar-user-profile">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sidebar-primary to-orange-600 p-0.5">
+            <div className="w-full h-full rounded-full bg-sidebar flex items-center justify-center">
+              <User className="w-5 h-5 text-sidebar-primary" />
+            </div>
+          </div>
+          <div className="flex-1">
+            <p className="text-sidebar-foreground font-semibold text-sm">Ayush</p>
+            <div className="flex items-center gap-1">
+              <Crown className="w-3 h-3 text-sidebar-primary" />
+              <p className="text-sidebar-primary text-xs font-medium">Pro Plan</p>
+            </div>
+          </div>
+        </div>
+      </SidebarFooter>
     </Sidebar>
   );
 }

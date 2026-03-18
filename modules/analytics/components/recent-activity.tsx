@@ -12,7 +12,7 @@ export async function RecentActivity({ userId }: RecentActivityProps) {
 
   if (!recentVisitors || recentVisitors.length === 0) {
     return (
-      <Card className="bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+      <Card className="bg-card dark:bg-card border-zinc-200 dark:border-zinc-800">
         <CardHeader>
           <CardTitle className="text-zinc-900 dark:text-zinc-100">Recent Activity</CardTitle>
           <CardDescription className="text-zinc-600 dark:text-zinc-400">Latest profile visitors</CardDescription>
@@ -43,7 +43,7 @@ export async function RecentActivity({ userId }: RecentActivityProps) {
   }
 
   return (
-    <Card className="bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+    <Card className="bg-card dark:bg-card border-zinc-200 dark:border-zinc-800">
       <CardHeader>
         <CardTitle className="text-zinc-900 dark:text-zinc-100">Recent Activity</CardTitle>
         <CardDescription className="text-zinc-600 dark:text-zinc-400">Latest profile visitors</CardDescription>

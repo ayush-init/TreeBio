@@ -65,7 +65,7 @@ export async function OverviewCards({ userId }: OverviewCardsProps) {
       {cards.map((card, index) => {
         const Icon = card.icon
         return (
-          <Card key={index} className="bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+          <Card key={index} className="bg-card dark:card border-zinc-200 dark:border-zinc-800">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-zinc-600 dark:text-zinc-400">{card.title}</CardTitle>
               <Icon className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />

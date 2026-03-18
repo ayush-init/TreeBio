@@ -1,95 +1,84 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Shimmer } from "@/components/ui/shimmer"
+import { ShimmerCard } from "@/components/ui/shimmer-card"
+import { ShimmerText } from "@/components/ui/shimmer-text"
+import { ShimmerHeading } from "@/components/ui/shimmer-text"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export function OverviewShimmer() {
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header shimmer */}
-        <div className="mb-8">
-          <Shimmer className="h-9 w-64 mb-2" />
-          <Shimmer className="h-5 w-96" />
+    <div className="space-y-6">
+      {/* Page header shimmer */}
+      <div className="mb-8 space-y-2">
+        <ShimmerHeading size="h1" className="w-1/3" />
+        <ShimmerText lines={2} width={["w-full", "w-2/3"]} />
+      </div>
+
+      {/* Stats cards shimmer */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <ShimmerCard key={i} className="p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-gray-200 dark:bg-white/10 rounded-lg animate-pulse"></div>
+              <div className="flex-1">
+                <div className="h-8 bg-gray-200 dark:bg-white/10 rounded w-20 animate-pulse"></div>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="h-3 bg-gray-200 dark:bg-white/10 rounded w-16 animate-pulse"></div>
+              <div className="h-2 bg-gray-200 dark:bg-white/10 rounded w-full animate-pulse"></div>
+            </div>
+          </ShimmerCard>
+        ))}
+      </div>
+
+      {/* Chart and tables shimmer */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Chart shimmer */}
+        <div className="lg:col-span-2">
+          <ShimmerCard className="p-6">
+            <div className="flex items-center justify-between mb-8">
+              <div className="h-6 bg-gray-200 dark:bg-white/10 rounded w-32 animate-pulse"></div>
+              <div className="flex gap-2">
+                <div className="h-8 bg-gray-200 dark:bg-white/10 rounded w-16 animate-pulse"></div>
+                <div className="h-8 bg-gray-200 dark:bg-white/10 rounded w-16 animate-pulse"></div>
+              </div>
+            </div>
+            {/* Chart area shimmer */}
+            <div className="h-48 bg-gray-200 dark:bg-white/10 rounded animate-pulse"></div>
+          </ShimmerCard>
         </div>
 
-        {/* Analytics cards shimmer */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Card key={i} className="bg-zinc-50 dark:bg-zinc-900">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <Shimmer className="h-4 w-24" />
-                <Shimmer variant="circle" className="h-4 w-4" />
-              </CardHeader>
-              <CardContent>
-                <Shimmer className="h-8 w-16 mb-2" />
-                <Shimmer className="h-3 w-32" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Main content shimmer */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* Analytics chart shimmer */}
-          <div className="lg:col-span-2">
-            <Card className="bg-zinc-50 dark:bg-zinc-900">
-              <CardHeader>
-                <Shimmer className="h-6 w-48 mb-2" />
-                <Shimmer className="h-4 w-64" />
-              </CardHeader>
-              <CardContent>
-                <Shimmer className="h-64 w-full" />
-              </CardContent>
-            </Card>
+        {/* Top links table shimmer */}
+        <ShimmerCard className="p-6">
+          <div className="h-6 bg-gray-200 dark:bg-white/10 rounded w-24 animate-pulse mb-4"></div>
+          <div className="space-y-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-3 p-3 bg-gray-100 dark:bg-white/5 rounded">
+                <div className="w-8 h-8 bg-gray-200 dark:bg-white/10 rounded animate-pulse"></div>
+                <div className="flex-1 space-y-1">
+                  <div className="h-4 bg-gray-200 dark:bg-white/10 rounded w-3/4 animate-pulse"></div>
+                  <div className="h-3 bg-gray-200 dark:bg-white/10 rounded w-1/2 animate-pulse"></div>
+                </div>
+                <div className="h-4 bg-gray-200 dark:bg-white/10 rounded w-12 animate-pulse"></div>
+              </div>
+            ))}
           </div>
+        </ShimmerCard>
 
-          {/* Top links table shimmer */}
-          <Card className="bg-zinc-50 dark:bg-zinc-900">
-            <CardHeader>
-              <Shimmer className="h-6 w-48 mb-2" />
-              <Shimmer className="h-4 w-40" />
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-zinc-100 dark:bg-zinc-800">
-                    <div className="flex items-center space-x-3 flex-1">
-                      <Shimmer variant="circle" className="w-8 h-8" />
-                      <div className="flex-1 space-y-2">
-                        <Shimmer className="h-4 w-3/4" />
-                        <Shimmer className="h-3 w-1/2" />
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Shimmer className="h-4 w-8" />
-                      <Shimmer variant="circle" className="h-3 w-3" />
-                    </div>
-                  </div>
-                ))}
+        {/* Recent activity shimmer */}
+        <ShimmerCard className="p-6">
+          <div className="h-6 bg-gray-200 dark:bg-white/10 rounded w-32 animate-pulse mb-4"></div>
+          <div className="space-y-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-3 p-3">
+                <div className="w-2 h-2 bg-gray-200 dark:bg-white/10 rounded-full animate-pulse"></div>
+                <div className="flex-1 space-y-1">
+                  <div className="h-4 bg-gray-200 dark:bg-white/10 rounded w-full animate-pulse"></div>
+                  <div className="h-3 bg-gray-200 dark:bg-white/10 rounded w-20 animate-pulse"></div>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Recent activity shimmer */}
-          <Card className="bg-zinc-50 dark:bg-zinc-900">
-            <CardHeader>
-              <Shimmer className="h-6 w-40 mb-2" />
-              <Shimmer className="h-4 w-48" />
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="flex items-center space-x-3 p-3 rounded-lg bg-zinc-100 dark:bg-zinc-800">
-                    <Shimmer variant="circle" className="w-10 h-10" />
-                    <div className="flex-1 space-y-2">
-                      <Shimmer className="h-4 w-3/4" />
-                      <Shimmer className="h-3 w-1/2" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+            ))}
+          </div>
+        </ShimmerCard>
       </div>
     </div>
   )
